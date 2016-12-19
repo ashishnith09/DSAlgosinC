@@ -1,0 +1,79 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+void findmaxblock(int [][3],int,int,int,int,int,int**,int*);
+
+int**create2darray(int rmax,int colmax)
+{
+	int **a=(int**)malloc(sizeof(int*)*rmax);
+	  for(int i=0;i<rmax;i++)
+        a[i]=(int*)malloc(sizeof(int)*colmax);
+        
+        for(int i=0;i<rmax;i++)
+        for(int j=0;j<colmax;j++)
+        a[i][j]=0;
+	return a;
+}
+
+int getval(int (*a)[5],int i,int j,int L,int H)
+{
+	if(i<0||i>=L||j<0||j>=H)
+	return 0;
+	else
+	return a[i][j];
+}
+
+void findmaxblock(int(*a)[5],int r,int c,int L,int H,int size,int **cntarr,int *maxsize)
+{
+if(r>=L || c>=H)
+return;
+
+cntarr[r][c]=1;
+
+if(size>*maxsize)
+*maxsize=size;
+
+int d[][2]={{1,0},{1,1},{0,1}};
+	
+	for(int i=0;i<3;i++)
+	{
+		int newi=r+d[i][0];
+		int newj=c+d[i][1];
+		
+		int val=getval(a,newi,newj,L,H);
+		if(val==1 && (cntarr[newi][newj])==0)
+		{
+	(*maxsize)++;
+		findmaxblock(a,newi,newj,L,H,size,cntarr,maxsize);
+	}
+	}
+    //cntarr[r][c]=0;
+}
+
+int getmaxones(int(*a)[5],int rmax,int colmax)
+{
+	int maxsize=0;
+	static int k=0;
+	int **cntarr=create2darray(rmax,colmax);
+	
+	for(int i=0;i<rmax;i++)
+	{
+		for(int j=0;j<colmax;j++)
+		{
+			if(a[i][j]==1)
+			findmaxblock(a,i,j,rmax,colmax,0,cntarr,&maxsize);
+	
+			if(maxsize>k)
+			k=maxsize;
+		}
+	}
+	return k;
+}
+
+int main()
+{
+	int a[][5]={{1,1,0,0,0},{0,1,1,0,1},{0,0,0,1,1},{1,0,0,1,1},{0,1,0,1,1}};
+		int x=getmaxones(a,5,5);
+	printf("Number of maximum adjacent 1's are =%d",x);
+	return 0;
+}
