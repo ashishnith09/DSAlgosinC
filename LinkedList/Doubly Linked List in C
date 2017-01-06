@@ -1,0 +1,223 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct DLL
+{
+	int data;
+	struct DLL*next;
+	struct DLL*prev;
+}dll;
+
+dll*createnode(int d)
+{
+	dll*node=(dll*)malloc(sizeof(dll));
+	if(node==NULL)
+	{
+		printf("Invalid memory");
+		return NULL;
+	}
+	node->data=d;
+	node->next=NULL;
+	node->prev=NULL;
+	
+	return node;
+}
+
+void insertfront(dll**headf,int d)
+{
+	dll*n=createnode(d);
+	dll*temp=*headf;
+	n->next=*headf;
+	if(*headf!=NULL)
+	temp->prev=n;
+	*headf=n;
+}
+
+void insertlast(dll**headf,int d)
+{
+	dll*n=createnode(d);
+	dll*current=*headf;
+	dll*prev;
+	if(*headf==NULL)
+	{
+		*headf=n;
+		return;
+	}
+	else
+	{
+		while(current->next!=NULL)
+		{
+			current=current->next;
+		}
+		current->next=n;
+		n->prev=current;
+	}
+}
+
+void insertafter(dll*headf,int d,int node)
+{
+	dll*current=headf;
+	dll*n=createnode(node);
+	if(headf==NULL)
+	{
+		return;
+	}
+	
+	while(current->data!=d && (current!=NULL))
+	{
+		current=current->next;
+		if(current==NULL)
+	{
+		printf("Node does not exists");
+		return;
+	}
+	}
+
+	n->next=current->next;
+	if(n->next!=NULL)
+	n->next->prev=n;
+	current->next=n;
+	n->prev=current;
+}
+ void insertbefore(dll**headf,int d,int node)
+ {
+ 	dll*current=*headf;
+ 	dll*p;
+	dll*n=createnode(node);
+	if(*headf==NULL)
+	{
+		return;
+	}
+	else if(current->data==d)
+	{
+		n->next=current;
+		current->prev=n;
+		*headf=n;
+	}
+	else
+	{
+		while(current->data!=d && (current!=NULL))
+		{
+			p=current;
+		current=current->next;
+		
+		if(current==NULL)
+		{
+		printf("Node does not exist");
+		return;
+	}
+	}
+		
+		p->next=n;
+		n->prev=p;
+		n->next=current;
+		current->prev=n;
+	}
+ }
+ 
+ void print(dll*root)
+ {
+ 	if(root==NULL)
+ 	return;
+ 	while(root)
+ 	{
+ 	printf("%d->",root->data);
+ 	root=root->next;
+ }
+printf("NULL");
+ }
+ 
+ void deletefront(dll**headf)
+ {
+ 	if(*headf==NULL)
+ 	return;
+ 	dll*current=*headf;
+ 	*headf=current->next;
+ 	current->next->prev=NULL;
+ 	free(current);
+ }
+ 
+ void deletelast(dll**headf)
+ {
+ 	if(*headf==NULL)
+ 	return;
+ 	dll*current=*headf;
+ 	dll*p;
+ 	if(current->next==NULL)
+ 	{
+ 		free(current);
+ 		*headf=NULL;
+	 }
+	 else
+	 {
+	 	while(current->next!=NULL)
+	 {
+	 	p=current;
+	 	current=current->next;
+	 }
+	 p->next=current->next;
+	 free(current);
+	 }
+ }
+ 
+ void deleteat(dll**headf,int d)
+ {
+ 	if(*headf==NULL)
+ 	return;
+ 	dll*current=*headf;
+ 	dll*p;
+ 	if(current->data==d)
+ 	{
+ 		*headf=current->next;
+ 		if(current->next!=NULL)
+ 		current->next->prev=NULL;
+ 		free(current);
+ 		return;
+	 }
+	 else
+	 {
+	 	while(current->data!=d && current!=NULL)
+	 	{
+	 		p=current;
+	 		current=current->next;
+	 		 if(current==NULL)
+	 		 {
+			printf("\nNode does not exist\n");
+		 return;
+	}
+		 }
+		
+		 
+		 p->next=current->next;
+		 if(current->next!=NULL)
+		 current->next->prev=p;
+		 free(current);
+	 }
+ }
+ 
+ int main()
+ {
+ 	dll*root=NULL;
+ 	insertfront(&root,10);
+ 	insertfront(&root,20);
+ 	insertfront(&root,30);
+ 	insertlast(&root,40);
+ 	insertlast(&root,50);
+ 	insertbefore(&root,0,60);
+ 	insertbefore(&root,10,70);
+ 	printf("\n");
+ 	print(root);
+ 	insertafter(root,0,80);
+ 	insertafter(root,10,90);
+ 	printf("\n");
+ 	print(root);
+ 	deletefront(&root);
+ 	deletefront(&root);
+ 	deletelast(&root);
+ 	printf("\n");
+ 	print(root);
+ 	deleteat(&root,0);
+ 	printf("\n");
+ 	print(root);
+ 	return 0;
+ }
