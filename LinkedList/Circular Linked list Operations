@@ -1,0 +1,183 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+
+	n->next=NULL;
+	n->data=d;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	node*current=*headf;
+	
+
+	if(current!=NULL)
+	{
+		while(current->next!=*headf)
+		current=current->next;
+
+		current->next=n;
+		n->next=*headf;
+	}
+	else
+	n->next=n;
+	
+	*headf=n;
+}
+
+void print(node*headf)
+{
+	if(headf==NULL)
+	{
+		printf("No elements");
+		return;
+	}
+	node*current=headf;
+	do
+	{
+		printf("%d->",current->data);
+		current=current->next;
+	}while(current!=headf);
+	
+}
+
+void append(node**headf,int d)
+{
+	node*n=createnode(d);
+	node*current=*headf;
+	if(*headf==NULL)
+	{
+	n->next=n;
+	*headf=n;
+	return;	
+	}
+	else
+	{
+		while(current->next!=*headf)
+		current=current->next;
+		
+		n->next=current->next;
+		current->next=n;
+		return;
+	}
+}
+
+void insertafter(node*prev,int d)
+{
+	node*n=createnode(d);
+	if(prev==NULL)
+	{
+		printf("lsit empty");
+		return;
+	}
+	else
+	{
+		n->next=prev->next;
+		prev->next=n;
+	}
+	
+}
+
+void insertbefore(node*headf,int d)
+{
+	node*n=createnode(d);
+	node*current=headf;
+	if(headf==NULL)
+	{
+		return;
+	}
+	else
+	{
+	while(current->next!=headf)
+	current=current->next;
+	
+	current->next=n;
+	n->next=headf;	
+	}
+}
+
+int countlength(node*headf)
+{
+	int count=0;
+	node*current=headf;
+	if(headf==NULL)
+	return 0;
+	
+	do
+	{
+		current=current->next;
+		count++;
+	}while(current!=headf);
+	
+	return count;
+}
+
+void deletefront(node**headf)
+{
+	if(*headf==NULL)
+	{
+		printf("Nothing to delete");
+		return;
+	}
+	node*current=*headf;
+	node*temp=*headf;
+	while(current->next!=*headf)
+	{
+		current=current->next;
+	}
+	current->next=(*headf)->next;
+	*headf=(*headf)->next;
+	
+	free(temp);
+}
+
+void deletelast(node**headf)
+{
+	node*current=*headf;
+	node*temp=*headf;
+	if(*headf==NULL)
+	return;
+	
+	while(current->next!=*headf)
+	{
+		temp=current;
+		current=current->next;
+	}
+	temp->next=current->next;
+	free(current);
+}
+
+int main()
+{
+	node*root=NULL;
+	push(&root,10);
+	push(&root,20);
+	push(&root,30);
+	append(&root,40);
+	append(&root,50);
+	insertafter(root,60);
+	insertafter(root->next->next,70);
+		
+	insertbefore(root,80);
+	insertbefore(root->next->next,90);
+	print(root);
+	printf("\nNo of elements is circular linked list=%d\n",countlength(root));
+	print(root);
+	deletefront(&root);
+	deletelast(&root);
+	printf("\n");
+	print(root);
+	
+	return 0;
+}
