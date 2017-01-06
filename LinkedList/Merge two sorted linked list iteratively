@@ -1,0 +1,99 @@
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+node*sortedmerge(node*a,node*b)
+{
+	node*head=NULL,*tail=head;
+	if(a==NULL)
+	return b;
+	else if(b==NULL)
+	return a;
+	
+	if(a->data<=b->data)
+	{
+		head=a;
+		a=a->next;
+	}
+	else if(a->data>b->data)
+	{
+		head=b;
+		b=b->next;
+	}
+	
+	tail=head;
+	while(1)
+	{
+		if(a==NULL)
+		{
+			tail->next=b;
+			break;
+		}
+		else if(b==NULL)
+		{
+			tail->next=a;
+			break;
+		}
+		
+		if(a->data<=b->data)
+		{
+		tail->next=a;
+		a=a->next;	
+		}
+		else if(a->data>b->data)
+		{
+			tail->next=b;
+			b=b->next;
+		}
+		tail=tail->next;
+	}
+	
+	return head;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL"<<endl;
+}
+
+int main()
+{
+	node*a=NULL;
+	push(&a,15);
+	push(&a,10);
+	push(&a,5);
+	Node*b=NULL;
+	push(&b,20);
+	push(&b,3);
+	push(&b,2);
+	print(a);
+	print(b);
+	node*head=sortedmerge(a,b);
+	cout<<"Merged list is="<<endl;
+	print(head);
+}
