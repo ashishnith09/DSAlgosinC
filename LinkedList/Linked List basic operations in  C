@@ -1,0 +1,194 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	if(n==NULL)
+	{
+		printf("Invalid memory");
+		return;
+	}
+n->next=*headf;
+*headf=n;
+}
+
+void insertlast(node**headf,int d)
+{
+	node*n=createnode(d);
+	node*temp=*headf;
+	if(n==NULL)
+	{
+		printf("Invalid memory");
+		return;
+	}
+	if(*headf==NULL)
+	{
+		n->next=*headf;
+		*headf=n;
+		return;
+	}
+	else
+	{
+	while(temp->next!=NULL)	
+	{
+		temp=temp->next;
+	}
+	temp->next=n;
+	}
+}
+
+void insertAtpos(node**headf,int d,int pos)
+{
+	if(pos<0)
+	return;
+	node*n=createnode(d);
+	node*temp=*headf;
+	node*prev,*q;
+	int i=1;
+	if(pos==0)
+	{
+		n->next=*headf;
+		*headf=n;
+		return;
+	}
+	else
+	{
+		while(i<pos && temp)
+		{
+			prev=temp;
+			temp=temp->next;
+			i++;
+		}
+	q=prev->next;
+	prev->next=n;
+	n->next=q;	
+	}
+	
+}
+
+void traverse(node*root)
+{
+	if(root==NULL)
+	return;
+	while(root)
+	{
+		printf("%d->",root->data);
+		root=root->next;
+	}
+	printf("NULL");
+}
+
+void deletefront(node**headf)
+{
+	if(*headf==NULL)
+	{
+		printf("empty list can not delete");
+		return;
+	}
+	else
+	{
+		node*temp=*(headf);
+		*headf=(*headf)->next;
+		free(temp);
+		
+	}
+}
+
+void deletelast(node**headf)
+{
+	node*temp=*headf;
+	node*prev;
+	if(temp->next==NULL)
+	{
+	temp=*headf;
+	*headf=NULL;
+	free(temp);
+	}
+	else
+	{
+	while(temp->next)
+	{
+	prev=temp;	
+	temp=temp->next;	
+	}
+	prev->next=temp->next;
+	free(temp);
+	}
+}
+
+void deletenode(node**headf,int key)
+{
+	if(*headf==NULL)
+	return;
+	node*temp=*headf,*prev;
+	
+	if(temp->data==key)
+	{
+	*headf=temp->next;
+	free(temp)	;
+	return;
+	}
+	
+	while(temp!=NULL && temp->data!=key)
+	{
+		prev=temp;
+		temp=temp->next;
+	}
+	
+	if(temp==NULL)
+	return;
+	
+	prev->next=temp->next;
+	free(temp);
+}
+
+void deletelist(node**headf)
+{
+	node*aux;
+	node*iterator=*headf;
+	while(iterator)
+	{
+		aux=iterator->next;
+		free(iterator);
+		iterator=aux;
+	}
+	*headf=NULL;
+}
+
+int main()
+{
+	node*root=NULL;
+	push(&root,10);
+	push(&root,20);
+	push(&root,80);
+	push(&root,90);
+	insertlast(&root,30);
+	insertlast(&root,40);
+	insertAtpos(&root,50,2);;
+	insertAtpos(&root,60,0);
+	insertAtpos(&root,70,5);
+	traverse(root);
+	printf("\n");
+	deletefront(&root);
+	deletelast(&root);
+	deletenode(&root,90);
+	traverse(root);
+	printf("\n");
+	deletelist(&root);
+	traverse(root);
+}
