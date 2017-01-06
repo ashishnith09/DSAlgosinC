@@ -1,0 +1,115 @@
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	if(n==NULL)
+	{
+		cout<<"Invalid memory";
+		return NULL;
+	}
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+void print(node*headf)
+{
+	while(headf)
+	{
+		cout<<headf->data<<"->";
+		headf=headf->next;
+	}
+	cout<<"NULL"<<endl;	
+}
+
+void swapnode(node**headf,int x,int y)
+{
+	if(*headf==NULL || (*headf)->next==NULL)
+	{
+	printf("Less than two nodes");
+	return;	
+	}
+	node*currx=*headf,*curry=*headf;
+	node*prevx,*prevy,*temp;
+	//find x
+	while(currx && currx->data!=x)
+	{
+		prevx=currx;
+		currx=currx->next;
+	}
+	if(currx==NULL)
+	return;
+	
+	while(curry && curry->data!=y)
+	{
+		prevy=curry;
+		curry=curry->next;
+	}
+	
+	if(curry==NULL)
+	return;
+	
+	if(currx==*headf)
+	{
+		temp=curry->next;
+		prevy->next=currx;
+		curry->next=currx->next;
+		*headf=curry;
+		currx->next=temp;
+	}
+	else if(curry==*headf)
+	{
+		temp=currx->next;
+		prevx->next=curry;
+		currx->next=curry->next;
+		*headf=currx;
+		curry->next=temp;
+	}
+	else if(prevy->data==currx->data)
+	{
+		temp=curry->next;
+		prevx->next=curry;
+		curry->next=prevy;
+		prevy->next=temp;
+	}
+	else if(prevx->data==curry->data)
+	{
+		temp=currx->next;
+		prevy->next=currx;
+		currx->next=prevx;
+		prevx->next=temp;
+	}
+	
+}
+
+int main()
+{
+	node*root=NULL;
+	push(&root,10);
+	push(&root,20);
+	push(&root,30);
+	push(&root,40);
+	push(&root,50);
+	push(&root,60);
+	
+	print(root);
+	swapnode(&root,40,50);
+	print(root);
+	
+	return 0;
+}
