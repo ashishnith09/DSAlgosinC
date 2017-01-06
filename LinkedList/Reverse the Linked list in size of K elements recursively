@@ -1,0 +1,77 @@
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL";
+}
+
+node* reverseK(node*headf,int k)
+{
+	if(headf==NULL||headf->next==NULL)
+	return headf;
+	
+	node*curr=headf,*prev=NULL,*temp;
+	int n=k;
+	while(curr && n>0)
+	{
+		temp=curr->next;
+		curr->next=prev;
+		prev=curr;
+		curr=temp;
+		n--;
+	}
+	
+	if(curr!=NULL)
+	(headf)->next=reverseK(curr,k);
+	
+	return prev;
+
+
+}
+
+int main()
+{
+	int k;
+	node*root=NULL;
+	push(&root,20);
+	push(&root,5);
+	push(&root,10);
+	push(&root,9);
+	push(&root,27);
+	push(&root,8);
+//	push(&root,11);
+//	push(&root,30);
+	print(root);
+	cout<<"\nEnter the size of chunk to reverse"<<endl;
+	cin>>k;
+	root=reverseK(root,k);
+	print(root);
+	return 0;
+}
