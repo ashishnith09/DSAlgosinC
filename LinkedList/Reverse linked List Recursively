@@ -1,0 +1,90 @@
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->next=NULL;
+	n->data=d;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+//head recursion
+
+void reverse2(node**headf,node*curr)
+{
+	if(*headf==NULL)
+	return;
+	if(curr->next==NULL)
+	{
+		*headf=curr;
+		return;
+	}
+	reverse2(headf,curr->next);
+	curr->next->next=curr;
+	curr->next=NULL;
+}
+
+//tail recursion
+
+void reverseutil(node*curr,node*prev,node**headf)
+{
+if(curr->next==NULL)
+{
+	*headf=curr;
+	
+	curr->next=prev;
+	return;
+}
+
+node*next=curr->next;
+curr->next=prev;
+reverseutil(next,curr,headf);
+}
+
+
+void reverse(node**headf)
+{
+if(*headf==NULL)
+return;
+reverseutil(*headf,NULL,headf);
+}
+
+
+void print(node*root)
+{
+	while(root)
+	{
+		cout<<root->data<<"->";
+		root=root->next;
+	}
+	cout<<"NULL"<<endl;
+}
+
+int main()
+{
+	node*root=NULL;
+	push(&root,10);
+	push(&root,20);
+	push(&root,30);
+	push(&root,40);
+	print(root);
+	reverse2(&root,root);
+	print(root);
+	reverse(&root);
+	print(root);
+	return 0;
+}
