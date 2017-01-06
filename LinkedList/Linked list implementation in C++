@@ -1,0 +1,183 @@
+#include<iostream>
+using namespace std;
+
+typedef class Node
+{
+	int data;
+	Node*next;
+	public:
+		void setdata(int d)
+		{
+			data=d;
+		}
+		void setnext(Node*anext)
+		{
+			next=anext;
+		}
+		int Data()
+		{
+			return data;
+		}
+		Node*Next()
+		{
+			return next;
+		}
+		Node*createnode(int d)
+		{
+			Node*n=new Node();
+			n->setnext(NULL);
+			n->setdata(d);
+			return n;
+		}
+}node;
+
+typedef class List
+{
+	node*head;
+	public:
+		List()
+		{
+			head=NULL;
+		}
+		void print();
+		void insertfirst(int data);
+		void insertlast(int data);
+		void insertat(int data,int pos);
+		void deletefront();
+		void deletelast();
+}list;
+
+void list::print()
+{
+	node*temp=head;
+	if(temp==NULL)
+	{
+		cout<<"Empty"<<endl;
+		return;
+	}
+
+while(temp)
+{
+	cout<<temp->Data()<<"-->";
+	temp=temp->Next();
+}
+cout<<"NULL";
+}
+
+void list::insertlast(int data)
+{
+node*newnode=new node();
+newnode=newnode->createnode(data);
+
+
+node*temp=head;
+
+if(temp!=NULL)
+{
+	while(temp->Next())
+	{
+		temp=temp->Next();
+	}
+	temp->setnext(newnode);
+}
+else
+{
+	head=newnode;
+}
+}
+
+void list::insertfirst(int data)
+{
+node*newnode=new node();
+newnode=newnode->createnode(data);
+	node*temp=head;
+	
+	newnode->setnext(temp);
+	head=newnode;
+}
+
+void list::insertat(int data,int pos)
+{
+	if(pos<1)
+	{
+		printf("invalid position to insert node");
+		return;
+	}
+	node*newnode=new node();
+	newnode->setdata(data);
+	newnode->setnext(NULL);
+	int i=1;
+	node*temp=head;
+	node*prev;
+	if(pos==1)
+	{
+		newnode->setnext(head);
+		head=newnode;
+		return;
+	}
+	while(i<pos && temp!=NULL)
+	{
+		prev=temp;
+		temp=temp->Next();
+		i++;
+	}
+	prev->setnext(newnode);
+	newnode->setnext(temp);
+	
+}
+
+void list::deletefront()
+{
+	node*temp=head;
+	if(head==NULL)
+	{
+		printf("List empty can not delete");
+		return;
+	}
+	else
+	{
+		head=temp->Next();
+		delete temp;
+	}
+}
+
+void list::deletelast()
+{
+	node*temp=head;
+	node*prev;
+		if(head==NULL)
+	{
+		printf("List empty can not delete");
+		return;
+	}
+	if(temp->Next()==NULL)
+	{
+		delete temp;
+		head=NULL;
+	}
+	else
+	{
+	while(temp->Next())
+	{
+	prev=temp;
+	temp=temp->Next();
+	}
+	prev->setnext(temp->Next());	
+	delete temp;
+	}
+}
+
+int main()
+{
+list l;
+l.insertlast(10);
+l.insertlast(20);
+l.insertfirst(30);
+l.insertfirst(40);
+l.insertat(50,2);
+l.insertat(60,1);
+l.deletelast();
+l.deletefront();
+l.print();
+	return 0;
+}
