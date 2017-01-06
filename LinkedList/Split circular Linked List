@@ -1,74 +1,75 @@
-#include<iostream>
+// Author :: Gaurav Ahirwar
+#include<bits/stdc++.h>
 using namespace std;
-
-typedef struct Node
-{
+ 
+struct node {
 	int data;
-	struct Node*next;
-}node;
-
-node*createnode(int d)
-{
-	node*n=new node;
-	n->data=d;
-	n->next=NULL;
-	return n;
+	struct node *next;
+};
+typedef struct node node;
+typedef struct node* Node;
+ 
+node *newNode(int key) {
+ 
+	Node temp = new node;
+	temp->data = key;
+	temp->next = NULL;
+	return temp;
 }
+ 
+void printlist(Node head) {
 
-void print(node*head)
-{
-	if(head==NULL)
-	return;
-	node*curr=head;
-	do
-	{
-		cout<<curr->data<<"->";
-		curr=curr->next;
-	}while(curr!=head);
-	
-	cout<<endl;
-}
-
-void splithalf(node*head,node**first,node**second)
-{
-	node*slow=head,*fast=head;
-	
-	if(head==NULL)
-	return;
-	
-	while(fast->next!=head && fast->next->next!=head)
-	{
-		slow=slow->next;
-		fast=fast->next->next;
+	if(!head) {
+		cout << "Empty List\n";
+		return;
 	}
 	
-	//even no of nodes
-	if(fast->next->next==head)
-	fast=fast->next;
+	Node curr = head;
+	cout << head->data << " ";
+	head = head->next;
+
+	while(head != curr) {
+		cout << head->data << " ";
+		head = head->next;
+	}
 	
-	*first=head;
+	cout << endl;
+}
+ 
+void solve(Node &head, Node &head1, Node &head2) {
 	
-	if(head->next!=head)
-	*second=slow->next;
+	if(!head) return;
 	
-	fast->next=slow->next;
+	Node slow = head;
+	Node fast = head;
 	
-	slow->next=head;
+	while(fast->next != head && fast->next->next != head) {
+		
+		slow = slow->next;
+		fast = fast->next->next;
+	}	
+	
+	head1 = head;
+	head2 = slow->next;
+	slow->next = head1;
+	fast->next == head ? fast->next = head2 : fast->next->next = head2;
 	
 }
+ 
 
-int main()
-{
-	node*root=NULL;
-	root=createnode(1);
-	root->next=root;
-	//root->next=createnode(2);
-	//root->next->next=root;
-	//root->next->next->next=root;
-//	root->next->next->next->next=root;
-	node*a=NULL,*b=NULL;
+int main() {
+ 
+	node *head = newNode(1);
+	head->next = newNode(2);
+	head->next->next = newNode(3);
+	head->next->next->next = newNode(4);
+	head->next->next->next->next = newNode(5);
+	head->next->next->next->next->next = head;
+ 
+	Node list1 = NULL, list2 = NULL;
+	solve(head, list1, list2);
+	printlist(list1);
+	printlist(list2);
 	
-	splithalf(root,&a,&b);
-	print(a);
-	print(b);
+	return 0;
 }
