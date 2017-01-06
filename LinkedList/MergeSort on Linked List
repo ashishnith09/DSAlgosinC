@@ -1,0 +1,113 @@
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL"<<endl;
+}
+
+void frontbacksplit(node*head,node**front,node**back)
+{
+	node*first,*second;
+	
+	if(head==NULL || head->next==NULL)
+	{
+		*front=head;
+		*back=NULL;
+	}
+	else
+	{
+	first=head;
+	second=head->next;
+	while(second)
+	{
+		second=second->next;
+		if(second!=NULL)
+		{
+			first=first->next;
+			second=second->next;
+		}
+	}
+	*front=head;
+	*back=first->next;
+	first->next=NULL;
+	}
+
+}
+
+node*sortedmerge(node*a,node*b)
+{
+	if(a==NULL)
+	return b;
+	else if(b==NULL)
+	return a;
+	
+	node*result=NULL;
+	
+	if(a->data<=b->data)
+	{
+	result=a;
+	result->next=sortedmerge(a->next,b)	;
+	}
+	else if(a->data>b->data)
+	{
+		result=b;
+		result->next=sortedmerge(a,b->next);
+	}
+	
+	return result;
+}
+
+void mergesort(node**headf)
+{
+	if(*headf==NULL || (*headf)->next==NULL)
+	return;
+	node*a,*b;
+	
+	//split the into half 
+	frontbacksplit(*headf,&a,&b);
+	mergesort(&a);
+	mergesort(&b);
+	*headf=sortedmerge(a,b);
+}
+
+int main()
+{
+	node*root=NULL;
+	push(&root,15);
+	push(&root,10);
+	push(&root,5);
+	push(&root,20);
+	push(&root,3);
+	push(&root,2);
+	
+	print(root);
+	mergesort(&root);
+	print(root);
+}
