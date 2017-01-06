@@ -1,0 +1,145 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<math.h>
+
+int blocksize;
+
+typedef struct Listnode
+{
+	int data;
+	struct Listnode*next;
+}listnode;
+
+typedef struct Linkedblock
+{
+	listnode*head;
+	Linkedblock*next;
+	int nodecount;
+}linkedblock;
+
+linkedblock*blockhead;
+
+listnode*newlistnode(int d)
+{
+	listnode*n=(listnode*)malloc(sizeof(listnode));
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+Linkedblock*newlinkedblock()
+{
+linkedblock*b=(linkedblock*)malloc(sizeof(linkedblock));
+b->head=NULL;
+b->next=NULL;
+b->nodecount=0;
+return b;
+}
+//node x at position
+
+void searchelement(int k,linkedblock**block,listnode**node)
+{
+//find the block
+int j=(k+blocksize-1)/blocksize;//kth node is in jth block
+linkedblock*p;
+while(--j)
+{
+p=p->next;	
+}
+*block=p;
+//find the node is block
+listnode*q=p->head;
+k=k%blocksize;
+if(k==0)
+k=blocksize;
+k=p->nodecount+1-k;
+
+while(k--)
+{
+	q=q->next;
+}
+*node=q;
+}
+
+void shift(linkedblock*a)
+{
+linkedblock*b;
+listnode*temp;
+
+while(a->nodecount>blocksize)
+{
+if(a->next==NULL)
+{
+	a->next=newlinkedblock();
+	b=a->next;
+	temp=a->head->next;
+	a->head->next=a->head->next->next;
+	b->head=temp;
+	temp->next=temp;
+	a->nodecount--;
+	b->nodecount++;
+}
+else
+{
+	b=a->next;
+	temp=a->head->next;
+	a->head->next=a->head->next->next;
+	temp->next=b->head->next;
+	b->head->next=temp;
+	b->head=temp;
+	a->nodecount--;
+	b->nodecount++;
+}
+a=b;
+}
+	
+}
+
+void addelement(int k,int x)
+{
+	listnode*p,*q;
+	linkedblock*r;
+	
+	if(!blockhead)
+	{
+		blockhead=newlinkedblock();
+		blockhead->head=newlistnode(x);
+		blockhead->head->next=blockhead->head;
+		blockhead->nodecount++;
+	}
+	else
+	{
+		if(k==0)
+		{
+			p=blockhead->head;
+			q=p->next;
+			p->next=newlistnode(x);
+			p->next->next=q;
+			blockhead->head=p->next;
+			blockhead->nodecount++;
+		}
+		else
+		{
+			searchelement(k,&r,&p);
+			q=p;
+			while(q->next!=p)
+			{
+				q=q->next;
+			}
+			q->next=newlistnode(x);
+			q->next->next=p;
+			r->nodecount++;
+			shift(r);
+		}
+	}
+}
+
+int main()
+{
+	listnode*root=NULL;
+	addelement(0,10);
+	addelement(1,20);
+	addelement(2,30);
+	return 0;
+}
