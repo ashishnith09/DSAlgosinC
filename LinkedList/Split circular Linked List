@@ -1,0 +1,74 @@
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+void print(node*head)
+{
+	if(head==NULL)
+	return;
+	node*curr=head;
+	do
+	{
+		cout<<curr->data<<"->";
+		curr=curr->next;
+	}while(curr!=head);
+	
+	cout<<endl;
+}
+
+void splithalf(node*head,node**first,node**second)
+{
+	node*slow=head,*fast=head;
+	
+	if(head==NULL)
+	return;
+	
+	while(fast->next!=head && fast->next->next!=head)
+	{
+		slow=slow->next;
+		fast=fast->next->next;
+	}
+	
+	//even no of nodes
+	if(fast->next->next==head)
+	fast=fast->next;
+	
+	*first=head;
+	
+	if(head->next!=head)
+	*second=slow->next;
+	
+	fast->next=slow->next;
+	
+	slow->next=head;
+	
+}
+
+int main()
+{
+	node*root=NULL;
+	root=createnode(1);
+	root->next=root;
+	//root->next=createnode(2);
+	//root->next->next=root;
+	//root->next->next->next=root;
+//	root->next->next->next->next=root;
+	node*a=NULL,*b=NULL;
+	
+	splithalf(root,&a,&b);
+	print(a);
+	print(b);
+}
