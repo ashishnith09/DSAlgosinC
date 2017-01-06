@@ -1,0 +1,55 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdint.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*npx;
+}node;
+
+node*XOR(node*a,node*b)
+{
+	return (node*) ((uintptr_t) (a) ^ (uintptr_t) (b));
+}
+
+void insert(node**headf,int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->npx=XOR(NULL,*headf);
+	
+	if(*headf!=NULL)
+	{
+		node*next=XOR(NULL,(*headf)->npx);
+		(*headf)->npx=XOR(next,n);
+	}
+	*headf=n;
+}
+
+void print(node*headf)
+{
+	if(headf==NULL)
+	return;
+	
+	node*curr=headf;
+	node*prev=NULL;
+	
+	while(curr)
+	{
+		printf("%d->",curr->data);
+		node*next=XOR(prev,curr->npx);
+		
+		prev=curr;
+		curr=next;
+	}
+}
+
+int main()
+{
+	node*root=NULL;
+	insert(&root,10);
+	insert(&root,20);
+	insert(&root,30);
+	print(root);
+}
