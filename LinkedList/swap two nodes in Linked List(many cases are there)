@@ -63,38 +63,21 @@ void swapnode(node**headf,int x,int y)
 	
 	if(curry==NULL)
 	return;
-	
-	if(currx==*headf)
-	{
-		temp=curry->next;
-		prevy->next=currx;
-		curry->next=currx->next;
-		*headf=curry;
-		currx->next=temp;
-	}
-	else if(curry==*headf)
-	{
-		temp=currx->next;
-		prevx->next=curry;
-		currx->next=curry->next;
-		*headf=currx;
-		curry->next=temp;
-	}
-	else if(prevy->data==currx->data)
-	{
-		temp=curry->next;
-		prevx->next=curry;
-		curry->next=prevy;
-		prevy->next=temp;
-	}
-	else if(prevx->data==curry->data)
-	{
-		temp=currx->next;
-		prevy->next=currx;
-		currx->next=prevx;
-		prevx->next=temp;
-	}
-	
+
+if(prevx!=NULL)
+prevx->next=curry;
+else
+*headf=curry;
+
+if(prevy!=NULL)
+prevy->next=currx;
+else
+*headf=currx;
+
+temp=curry->next;
+curry->next=currx->next;
+currx->next=temp;
+
 }
 
 int main()
