@@ -1,0 +1,76 @@
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+	struct Node*prev;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->data=d;
+	n->next=NULL;
+	n->prev=NULL;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*curr=*headf;
+	node*n=createnode(d);
+	if(*headf==NULL)
+	{
+		*headf=n;
+		return;
+	}
+	else
+	{
+		n->next=*headf;
+		(*headf)->prev=n;
+	}
+	*headf=n;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL"<<endl;
+}
+
+void reverse(node**headf,node*curr,node*prev)
+{
+if(curr->next==NULL)
+{
+*headf=curr;
+curr->next=prev;
+curr->prev=NULL;
+return;	
+}
+node*next=curr->next;
+curr->next=prev;
+curr->prev=next;
+reverse(headf,next,curr);
+}
+
+int main()
+{
+	node*root=NULL;
+	push(&root,10);
+	push(&root,20);
+	push(&root,30);
+	push(&root,40);
+	push(&root,50);
+	push(&root,60);
+	print(root);
+	node*curr=root,*prev=NULL;
+	reverse(&root,curr,prev);
+	print(root);
+	return 0;
+}
