@@ -51,7 +51,12 @@ cout<<endl;
 void sortedinsert(node**headf,int key)
 {
 	if(*headf==NULL)
-	return;
+	{
+node *n=createnode(key);
+n->next=n;
+*headf=n;
+	return;	
+}
 node*n=createnode(key);
 node*prev;
 node*curr=*headf;
@@ -73,12 +78,6 @@ while(curr->data<key && curr!=*headf)
 prev=curr;
 curr=curr->next;
 }
-if(prev->next==*headf)
-{
-prev->next=n;
-n->next=*headf;
-return;
-}
 prev->next=n;
 n->next=curr;
 
@@ -94,6 +93,6 @@ push(&root,&last,5);
 push(&root,&last,3);
 push(&root,&last,1);
 print(root);
-sortedinsert(&root,20);
+sortedinsert(&root,11);
 print(root);
 }
