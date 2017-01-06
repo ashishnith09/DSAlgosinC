@@ -1,0 +1,153 @@
+#include<iostream>
+#include<math.h>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL";
+}
+
+int getsize(node*a)
+{
+	int count=0;
+	while(a)
+	{
+		count++;
+		a=a->next;
+	}
+	return count;
+}
+
+node*addsamesize(node*head1,node*head2,int *carry)
+{
+	
+	if(head1==NULL)
+	return NULL;
+	
+	node*result=new node;
+	int sum;
+	
+	result->next=addsamesize(head1->next,head2->next,carry);
+	sum=head1->data+head2->data+*carry;
+
+	*carry=sum/10;
+	sum=sum%10;
+	
+	result->data=sum;
+	return result;
+}
+
+void swap(node**a,node**b)
+{
+	node*temp;
+	temp=*a;
+	*a=*b;
+	*b=temp;
+}
+
+void addcarrytoremaining(node*head1,node*curr,int*carry,node**result)
+{
+	int sum;
+	if(head1!=curr)
+	{
+		addcarrytoremaining(head1->next,curr,carry,result);
+		
+		sum=head1->data+*carry;
+		
+		*carry=sum/10;
+		sum=sum%10;
+		
+		push(result,sum);
+		
+	}
+}
+
+void addlist(node*head1,node*head2,node**result)
+{
+	node*curr;
+	if(head1==NULL)
+	{
+		*result=head2;
+		return;
+	}
+	else if(head2==NULL)
+	{
+		*result=head1;
+		return;
+	}
+	
+	int size1=getsize(head1);
+	int size2=getsize(head2);
+	
+	int carry=0;
+	
+	if(size1==size2)
+	{
+		*result=addsamesize(head1,head2,&carry);
+	}
+	else if(size1!=size2)
+	{
+		int diff=abs(size1-size2);
+		
+		if(size1<size2)
+		swap(&head1,&head2);
+		
+		curr=head1;
+		
+		for(int i=0;i<diff;i++)
+		curr=curr->next;
+		
+		*result=addsamesize(curr,head2,&carry);
+		
+		addcarrytoremaining(head1,curr,&carry,result);
+	}
+	if(carry)
+	push(result,carry);
+}
+
+int main()
+{
+	node*head1,*head2;
+	node*result=NULL;
+	int a1[]={9,9,8};//998
+	int a2[]={1,8,4};//18
+	
+	int s1=sizeof(a1)/sizeof(a1[0]);
+	int s2=sizeof(a2)/sizeof(a2[0]);
+	
+	for(int i=s1-1;i>=0;i--)
+	push(&head1,a1[i]);
+	
+	for(int i=s2-1;i>=0;i--)
+	push(&head2,a2[i]);
+	
+	addlist(head1,head2,&result);
+	print(result);
+	return 0;
+}
