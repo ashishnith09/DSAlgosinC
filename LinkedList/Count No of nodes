@@ -1,0 +1,48 @@
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	if(n==NULL)
+	{
+		cout<<"Invalid memory";
+		return NULL;
+	}
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+int getcount(node*headf)
+{
+	if(headf==NULL)
+	return 0;
+	
+	return(getcount(headf->next)+1);
+}
+
+int main()
+{
+	node*root=NULL;
+	//push(&root,10);
+//	push(&root,20);
+	//push(&root,30);
+	
+	cout<<"total no of nodes in linked list is = "<<getcount(root);
+	
+	return 0;
+}
