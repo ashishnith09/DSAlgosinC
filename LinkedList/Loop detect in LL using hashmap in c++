@@ -1,0 +1,74 @@
+#include<iostream>
+#include<map>
+
+using namespace std;
+
+typedef struct Node
+{
+	struct Node*next;
+	int data;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL";
+}
+
+int Isloop(node*head)
+{
+	map<node*,int>mp;
+	node*temp=head;
+	mp.insert(pair<node*,int>(temp,temp->data));
+	map<node*,int>::iterator it;
+	while(temp->next)
+	{
+		it=mp.find(temp->next);
+		if(it!=mp.end())
+		{
+			return 1;
+		}
+		else
+		{
+			mp.insert(pair<node*,int>(temp->next,temp->next->data));
+		}
+		temp=temp->next;
+	}
+	return 0;
+}
+
+int main()
+{
+	node*root=NULL;
+	root=createnode(1);
+	root->next=createnode(2);
+	root->next->next=createnode(3);
+	root->next->next->next=createnode(4);
+	root->next->next->next->next=createnode(5);
+	//root->next->next->next->next->next=root;
+	
+	if(Isloop(root))
+	cout<<"Loop detected";
+	else
+	cout<<"No loop";
+	return 0;
+}
