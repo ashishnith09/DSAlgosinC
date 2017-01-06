@@ -1,0 +1,103 @@
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+int getnumber(node*root)
+{
+	if(root==NULL)
+	return 0;
+	if(root->next==NULL)
+	return root->data;
+	
+	node*curr=root;
+	int exp=1;
+	int sum=0;
+	int d;
+	while(curr)
+	{
+	d=curr->data;
+	d=d*exp;
+	sum=sum+d;
+	exp=exp*10;
+	curr=curr->next;
+	}
+	return sum;
+}
+
+void addlast(node**headf,node**last,int d)
+{
+	node*n=createnode(d);
+	if(*headf==NULL)
+	{
+		*headf=n;
+		*last=n;
+		return;
+	}
+	(*last)->next=n;
+	*last=(*last)->next;	
+}
+
+void makenumber(node**headf,int sum)
+{
+	node*last;
+	if(sum==0)
+	return;
+	int d;
+	int exp=10;
+	while(sum>0)
+	{
+	d=sum%10;
+	sum=sum/10;
+	addlast(headf,&last,d);
+	//cout<<(*headf)->data<<endl;
+	}
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL"<<endl;
+}
+
+int main()
+{
+	node*root1=NULL;
+	root1=createnode(3);
+	//root1->next=createnode(6);
+	//root1->next->next=createnode(5);
+	print(root1);
+	node*root2=NULL;
+	root2=createnode(2);
+	root2->next=createnode(4);
+	root2->next->next=createnode(8);
+	print(root2);
+	int n1=getnumber(root1);
+	int n2=getnumber(root2);
+	cout<<"First number is="<<n1<<endl;
+	cout<<"Second number is ="<<n2<<endl;
+	
+	
+	int sum=n1+n2;
+	cout<<"sum of no is = "<<sum<<endl;
+	node*root=NULL;
+	makenumber(&root,sum);
+	print(root);
+	
+}
