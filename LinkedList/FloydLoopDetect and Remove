@@ -1,0 +1,85 @@
+#include<iostream>
+#include<map>
+
+using namespace std;
+
+typedef struct Node
+{
+	struct Node*next;
+	int data;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL";
+}
+
+
+int detectremoveloop(node*head)
+{
+//find if loop is there or not
+node*slow=head,*fast=head->next;
+
+while(slow && fast && fast->next)
+{
+//loop found
+if(slow==fast)
+break;
+
+slow=slow->next;
+fast=fast->next->next;
+}
+
+if(slow==fast)
+{
+	slow=head;
+	while(slow!=fast->next)
+	{
+		slow=slow->next;
+		fast=fast->next;
+	}
+	fast->next=NULL;
+	return 1;
+}
+	return 0;
+}
+
+
+int main()
+{
+	node*root=NULL;
+	root=createnode(1);
+	root->next=createnode(2);
+	root->next->next=createnode(3);
+	root->next->next->next=createnode(4);
+	root->next->next->next->next=createnode(5);
+	root->next->next->next->next->next=root;
+	
+	if(detectremoveloop(root))
+	cout<<"Loop detected"<<endl;
+	else
+	cout<<"No loop"<<endl;
+	
+	print(root);
+	return 0;
+}
