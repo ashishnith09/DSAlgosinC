@@ -1,0 +1,71 @@
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+node*sortedmerge(node*a,node*b)
+{
+	if(a==NULL)
+	return b;
+	if(b==NULL)
+	return a;
+	node*result=NULL;
+	
+	if(a->data<=b->data)
+	{
+		result=a;
+		result->next=sortedmerge(a->next,b);
+	}
+	else if(a->data>b->data)
+	{
+		result=b;
+		result->next=sortedmerge(a,b->next);
+	}
+	return result;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL"<<endl;
+}
+
+int main()
+{
+	node*a=NULL,*b=NULL;
+	push(&a,15);
+	push(&a,10);
+	push(&a,5);
+	push(&b,20);
+	push(&b,3);
+	push(&b,2);
+	print(a);
+	print(b);
+	node*head=sortedmerge(a,b);
+	cout<<"Merged sorted list"<<endl;
+	print(head);
+	return 0;
+}
