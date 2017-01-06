@@ -1,0 +1,75 @@
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL"<<endl;
+}
+
+void rotateK(node**headf,int k)
+{
+	node*curr=*headf,*kth,*last;
+	
+	while(k>1 && curr)
+	{
+	k--;
+	curr=curr->next;	
+	}
+	if(curr==NULL||curr->next==NULL)
+	return;
+	
+	kth=curr->next;
+	node*curr2=curr;
+	while(curr2->next)
+	{
+		curr2=curr2->next;
+	}
+	
+	curr2->next=*headf;
+	curr->next=NULL;
+	*headf=kth;
+}
+
+int main()
+{
+	node*root=NULL;
+	push(&root,10);
+	push(&root,20);
+	push(&root,30);
+	push(&root,40);
+	push(&root,50);
+	print(root);
+	int k;
+	cout<<"enter the no of nodes to be rotated"<<endl;
+	cin>>k;
+	rotateK(&root,k);
+	print(root);
+	
+	return 0;
+}
