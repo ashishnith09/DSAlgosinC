@@ -1,0 +1,111 @@
+#include<iostream>
+using namespace std;
+
+typedef class Node
+{
+	int data;
+	Node*next;
+	Node*prev;
+	public:
+		void setdata(int d)
+		{
+			data=d;
+		}
+		void setnext(Node*anext)
+		{
+			next=anext;
+		}
+		void setprev(Node*aprev)
+		{
+			prev=aprev;
+		}
+		int Data()
+		{
+			return data;
+		}
+		Node*Next()
+		{
+			return next;
+		}
+		Node*createnode(int d)
+		{
+			Node*n=new Node();
+			n->setnext(NULL);
+			n->setprev(NULL);
+			n->setdata(d);
+			return n;
+		}
+}node;
+
+typedef class List
+{
+	node*head;
+	public:
+		List()
+		{
+			head=NULL;
+		}
+		void print();
+		void insertfront(int data);
+		void insertlast(int data);
+		void insertat(int data,int pos);
+		void deletefront();
+		void deletelast();
+}list;
+
+void list::print()
+{
+	node*temp=head;
+	if(temp==NULL)
+	{
+		cout<<"Empty"<<endl;
+		return;
+	}
+	while(temp)
+	{
+		cout<<temp->Data()<<"->";
+		temp=temp->Next();
+	}
+	cout<<"NULL";
+}
+
+void list::insertlast(int data)
+{
+	node*newnode=new node();
+	newnode=newnode->createnode(data);
+	node*temp=head;
+	if(temp!=NULL)
+	{
+		while(temp->Next())
+		temp=temp->Next();
+		
+		temp->setnext(newnode);
+		newnode->setprev(temp);
+	}
+	else
+	{
+		head=newnode;
+		return;
+	}
+}
+
+void list::insertfront(int data)
+{
+	node*newnode=new node();
+	newnode=newnode->createnode(data);
+	node*temp=head;
+	newnode->setnext(temp);
+	if(temp!=NULL)
+	temp->setprev(newnode);
+	head=newnode;
+}
+
+int main()
+{
+	list l;
+	l.insertlast(100);
+	l.insertlast(20);
+	l.insertfront(30);
+	l.print();
+	return 0;
+}
