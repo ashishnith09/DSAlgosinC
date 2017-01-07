@@ -1,0 +1,100 @@
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+	struct Node*prev;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->data=d;
+	n->next=NULL;
+	n->prev=NULL;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	n->data=d;
+	n->next=*headf;
+	if(*headf!=NULL)
+	(*headf)->prev=n;
+	*headf=n;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL"<<endl;
+}
+
+node*split(node*head)
+{
+	node*slow=head,*fast=head;
+	
+	while(fast->next && fast->next->next)
+	{
+		slow=slow->next;
+		fast=fast->next->next;
+	}
+	node*temp=slow->next;
+	slow->next=NULL;
+	return temp;
+}
+
+node*merge(node*first,node*second)
+{
+	if(first==NULL)
+	return second;
+	
+	if(second==NULL)
+	return first;
+	
+	if(first->data<second->data)
+	{
+		first->next=merge(first->next,second);
+		first->next->prev=first;
+		first->prev=NULL;
+		return first;
+	}
+	else
+	{
+		second->next=merge(first,second->next);
+		second->next->prev=second;
+		second->prev=NULL;
+		return second;
+	}
+}
+
+node*mergesort(node*head)
+{
+	if(head==NULL||head->next==NULL)
+	return head;
+	node*second=split(head);
+	head=mergesort(head);
+	second=mergesort(second);
+	return merge(head,second);
+}
+
+int main()
+{
+	node*root=NULL;
+	push(&root,1);
+	push(&root,2);
+	push(&root,3);
+	push(&root,4);
+	push(&root,5);
+	print(root);
+	root=mergesort(root);
+	print(root);
+	return 0;
+}
