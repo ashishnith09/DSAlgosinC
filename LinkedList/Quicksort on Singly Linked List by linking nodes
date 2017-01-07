@@ -1,0 +1,120 @@
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+node*lastelement(node*head)
+{
+	while(head!=NULL && head->next!=NULL)
+	head=head->next;
+	return head;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL";
+}
+
+node*partition(node*head,node*end,node**newhead,node**newend)
+{
+	node*pivot=end;
+	node*prev=NULL,*curr=head,*tail=pivot;
+	while(curr!=pivot)
+	{
+		if(curr->data<pivot->data)
+		{
+			if(*newhead==NULL)
+			*newhead=curr;
+			
+			prev=curr;
+			curr=curr->next;
+		}
+		else
+		{
+			if(prev)
+			prev->next=curr->next;
+			node*temp=curr->next;
+			curr->next=NULL;
+			tail->next=curr;
+			tail=curr;
+			curr=temp;
+		}
+	}
+	
+	if((*newhead)==NULL)
+	*(newhead)=pivot;
+	
+	*(newend)=tail;
+	
+	return pivot;
+}
+
+node*quicksort(node*head,node*end)
+{
+	if(!head||head==end)
+	return head;
+	
+	node*newhead=NULL,*newend=NULL;
+	
+	node*pivot=partition(head,end,&newhead,&newend);
+	
+	if(newhead!=pivot)
+	{
+		node*temp=newhead;
+		while(temp->next!=pivot)
+		temp=temp->next;
+		temp->next=NULL;
+		
+		newhead=quicksort(newhead,temp);
+		
+		temp=lastelement(newhead);
+		temp->next=pivot;
+	}
+	
+	pivot->next=quicksort(pivot->next,newend);
+	return newhead;	
+}
+
+void _quicksort(node**headf)
+{
+	*headf=quicksort(*headf,lastelement(*headf));
+	return;
+}
+
+int main()
+{
+	node*root=NULL;
+	push(&root,5);
+	push(&root,20);
+	push(&root,4);
+	push(&root,3);
+	push(&root,30);
+	print(root);
+	_quicksort(&root);
+	cout<<"Sorted List"<<endl;
+	print(root);
+}
