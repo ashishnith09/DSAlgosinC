@@ -1,0 +1,99 @@
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+void postorder(node*root)
+{
+	if(root==NULL)
+	return;
+	postorder(root->left);
+	postorder(root->right);
+	printf("%d ",root->data);
+}
+
+void print(node*head)
+{
+node*curr=head;
+if(head!=NULL)
+{
+do
+{
+	cout<<curr->data<<"->";
+	curr=curr->right;
+}while(curr!=head);
+	
+}	
+}
+
+node*concatenate(node*left,node*right)
+{
+	if(left==NULL)
+	return right;
+	if(right==NULL)
+	return left;
+	
+	node*t1,*t2;
+	//find last postion of left list
+	t1=left->left;
+	t2=right->left;
+	//concatenate both
+	
+	t1->right=right;
+	right->left=t1;
+	
+	left->left=t2;
+	t2->right=left;
+
+	return left;
+}
+
+node*bstToDLL(node*root)
+{
+	if(root==NULL)
+	return NULL;
+	//post order traversal, we can also use inorder traversal
+	// Recursively convert left and right subtrees
+	node*left=bstToDLL(root->left);
+	node*right=bstToDLL(root->right);
+	
+	// Make a circular linked list of single node
+    // (or root). To do so, make the right and
+    // left pointers of this node point to itself
+	root->left=root->right=root;
+	
+	// Step 1 (concatenate the left list with the list 
+    //         with single node, i.e., current node)
+    // Step 2 (concatenate the returned list with the
+    //         right List)
+	return concatenate(concatenate(left,root),right);
+}
+
+int main()
+{
+	node*root;
+	root=createnode(10);
+	root->left=createnode(12);
+	root->left->left=createnode(25);
+	root->left->right=createnode(30);
+	root->right=createnode(15);
+	root->right->left=createnode(36);
+	postorder(root);
+	node*head=bstToDLL(root);
+	cout<<"\nCircular Doubly linked list is="<<endl;
+	print(head);
+	return 0;
+}
