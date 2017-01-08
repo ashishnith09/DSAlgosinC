@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct node 
+{
+	int data;
+	struct node* left;
+	struct node* right;
+};
+void recur(node *root,node **pre,node **head)
+{
+	if(root==NULL)
+	return;
+	recur(root->left,pre,head);
+	if(*pre)
+	(*pre)->right=root;
+	if(*head==NULL)
+	*head=root;
+	root->left=*pre;
+	*pre=root;
+	(*head)->left=root;
+	node *temp=root->right;
+	root->right=*head;
+	recur(temp,pre,head);
+}
+struct node* newNode(int data) 
+{
+struct node* node = (struct node*)
+					malloc(sizeof(struct node));
+node->data = data;
+node->left = NULL;
+node->right = NULL;
+return(node);
+}
+int main()
+{
+/*create a tree*/
+struct node *root = newNode(1);
+root->left	 = newNode(2);
+root->right	 = newNode(3);
+root->left->left = newNode(4);
+root->left->right = newNode(5); 
+node *pre=NULL,*head=NULL;
+recur(root,&pre,&head);
+node *temp=head;
+do
+{
+    printf("%d ",temp->data);
+    temp=temp->left;
+}while(temp!=head);
+getchar();
+return 0;
+}
