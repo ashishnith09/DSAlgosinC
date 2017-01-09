@@ -1,0 +1,59 @@
+#include<iostream>
+using namespace std;
+
+typedef class Node
+{
+	public:
+		int data;
+		class Node*next;
+		Node(int d)
+		{
+			data=d;
+			next=NULL;
+		}
+}node;
+
+void push(node**headf,int d)
+{
+	node*n=new node(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL"<<endl;
+}
+
+node*pairswap(node*head)
+{
+if(head==NULL || head->next==NULL)
+return NULL;
+
+node*temp;
+temp=head->next;
+head->next=temp->next;
+temp->next=head;
+head=temp;
+
+head->next->next=pairswap(head->next->next);
+return head;	
+}
+
+int main()
+{
+	node*root=NULL;
+	push(&root,4);
+	push(&root,3);
+	push(&root,2);
+	push(&root,1);
+	print(root);
+	node*rev=pairswap(root);
+	print(rev);
+	return 0;
+}
