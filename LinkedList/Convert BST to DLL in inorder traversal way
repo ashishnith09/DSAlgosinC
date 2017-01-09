@@ -1,0 +1,86 @@
+#include<iostream>
+using namespace std;
+
+typedef class Node
+{
+	public:
+		int data;
+		class Node*left;
+		class Node*right;
+		Node(int d)
+		{
+			data=d;
+			left=NULL;
+			right=NULL;
+		}
+}node;
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->right;
+	}
+	cout<<"NULL";
+}
+
+void fixpreptr(node*root)
+{
+	static node*prev=NULL;
+	if(root!=NULL)
+	{
+	fixpreptr(root->left);
+	root->left=prev;
+	prev=root;
+	fixpreptr(root->right);
+	}
+}
+
+node*fixnextptr(node*root)
+{
+	node*prev=NULL;
+	
+	while(root->right && root)
+	root=root->right;
+	
+	while(root->left && root)
+	{
+		prev=root;
+		root=root->left;
+		root->right=prev;
+	}
+	return root;
+}
+
+void inorder(node*root)
+{
+	if(root==NULL)
+	return;
+	inorder(root->left);
+	cout<<root->data<<"->";
+	inorder(root->right);
+}
+
+node*bstToDll(node*root)
+{
+	//set previous pointer to left
+fixpreptr(root)	;
+//fix next pointer right and return
+return fixnextptr(root);
+}
+
+int main()
+{
+	node *root = new Node(10);
+    root->left = new Node(12);
+    root->right = new Node(15);
+    root->left->left= new Node(25);
+    root->left->right= new Node(30);
+    root->right->left= new Node(36);
+	cout<<"inorder traversl is \n";
+	inorder(root);
+	node*head=bstToDll(root);
+	cout<<"Doubly linked list is \n";
+	print(head);
+}
