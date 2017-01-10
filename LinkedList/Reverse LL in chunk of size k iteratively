@@ -1,0 +1,81 @@
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+struct node {
+	int d;
+	node * next;
+};
+
+
+void insert_node(node *&list, int data) {
+	node *t = new node;
+	t->d = data;
+	t->next = NULL;
+
+	if (list) {
+		node *l = list;
+		while (l->next)
+			l = l->next;
+		l->next = t;
+	}
+	else 
+		list = t;
+}
+
+
+void print_list(node *l) {
+	while (l) {
+		cout << l->d << "-->";
+		l = l->next;
+	}
+	cout << endl;
+}
+
+// 10 11 12 13 14 15 16 17 18 19 20 21 22
+node* reverse_list(node *list, int cnt) {
+	node *prev = NULL, *cur = list;
+	if (!list) return list;
+	if (!list->next) return list;
+	
+	node * head = NULL;
+	node *prev_end = NULL;
+
+	while (1) {
+		node *cur_end = cur;
+		prev = NULL;
+		int k = cnt;
+		while (cur && k--) {
+			node *tmp = cur->next;
+			cur->next = prev;
+			prev = cur;
+			cur = tmp;
+		}
+		// 12 11 10 13
+		if (prev_end) {
+			prev_end->next = prev;
+		}
+		prev_end = cur_end;
+
+		if (!cur) break;
+		if (head == NULL)
+			head = prev;
+	}
+	return head;
+}
+
+
+
+
+
+int main() {
+	node *l = NULL;
+	for (int i = 1; i < 6; i++)
+		insert_node(l, i);
+	print_list(l);
+	node *rl= reverse_list(l, 3);
+	print_list(rl);
+	cin.ignore();
+}
