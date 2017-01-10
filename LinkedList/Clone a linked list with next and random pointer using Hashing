@@ -1,0 +1,86 @@
+#include<iostream>
+#include<map>
+using namespace std;
+
+typedef class Node
+{
+	public:
+		int data;
+		class Node*next;
+		class Node*random;
+		Node(int d)
+		{
+			data=d;
+			next=NULL;
+			random=NULL;
+		}
+}node;
+
+void push(node**headf,int d)
+{
+	node*n=new Node(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL"<<endl;
+}
+
+node*clone(node*head)
+{
+	node*curr;
+	node*x,*y;
+	//createhash table
+	map<node*,node*>mp;
+	x=head;
+	while(x)
+	{
+		y=new Node(x->data);
+		mp.insert(pair<node*,node*>(x,y));
+		x=x->next;
+	}
+	map<node*,node*>::iterator it;
+	x=head;
+
+while(x)
+{
+	it=mp.find(x);
+	y=it->second;
+	it=mp.find(x->next);
+	y->next=it->second;
+	it=mp.find(x->random);
+	y->random=it->second;
+	x=x->next;
+}
+y->next=NULL;
+x=head;
+it=mp.find(x);
+return it->second;
+}
+
+int main()
+{
+	node*root=NULL;
+	push(&root,5);
+	push(&root,4);
+	push(&root,3);
+	push(&root,2);
+	push(&root,1);
+	root->random=root->next->next;
+	root->next->random=root;
+	root->next->next->random=root->next->next->next->next;
+	root->next->next->next->random=root->next->next;
+	root->next->next->next->next->random=root->next;
+	print(root);
+	node*root2=clone(root);
+	print(root2);
+	print(root);
+	return 0;
+}
