@@ -1,0 +1,72 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<limits.h>
+
+typedef struct Node
+{
+int data;
+struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+void push(node**top,int d)
+{
+	node*n=createnode(d);
+	n->next=*top;
+	*top=n;
+	printf("Element %d pushed to stack\n",d);
+}
+int Isempty(node*top)
+{
+	return top==NULL;
+}
+
+int pop(node**top)
+{
+if(Isempty(*top))
+{
+	printf("Empty stack\n");
+	return INT_MIN;
+}
+	
+	node*temp= *top;
+	(*top)=(*top)->next;
+	int d=temp->data;
+	free(temp);
+	return d;
+}
+
+void deletestack(node*s)
+{
+	if(s==NULL)
+	return;
+	node*temp=s;
+	while(temp)
+	{
+		node*p=temp->next;
+		free(temp);
+		temp=p;
+	}
+}
+
+int main()
+{
+	node*top=NULL;
+	push(&top,1);
+	push(&top,2);
+	push(&top,3);
+	push(&top,4);
+	printf("Poppped element is = %d\n",pop(&top));
+	printf("Poppped element is = %d\n",pop(&top));
+	printf("Poppped element is = %d\n",pop(&top));
+	printf("Poppped element is = %d\n",pop(&top));
+	printf("Poppped element is = %d\n",pop(&top));
+	return 0;
+}
