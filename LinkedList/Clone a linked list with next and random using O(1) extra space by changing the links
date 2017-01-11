@@ -1,0 +1,100 @@
+#include<iostream>
+#include<map>
+using namespace std;
+
+typedef class Node
+{
+	public:
+		int data;
+		class Node*next;
+		class Node*random;
+		Node(int d)
+		{
+			data=d;
+			next=NULL;
+			random=NULL;
+		}
+}node;
+
+void push(node**headf,int d)
+{
+	node*n=new Node(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL"<<endl;
+}
+
+node*clone(node*head)
+{
+if(head==NULL)
+return NULL;
+//insert new created node between 1 & 2 and 2 bw 2 and 3 and on
+node*x=head,*y,*next;
+y=new node(x->data);
+node*s=y;
+while(x)
+{
+next=x->next;
+x->next=y;
+y->next=next;
+if(next)	
+y=new node(next->data);
+x=next;
+}
+y=s;
+x=head;
+
+while(x)
+{
+	x->next->random=x->random->next;
+	x=x->next->next;
+}
+//restore the original & copy
+x=head;
+y=s;
+while(x->next)
+{
+	if(x->next==NULL||y->next==NULL)
+	break;
+	
+	x->next=x->next->next;
+	y->next=y->next->next;
+	x=x->next;
+	y=y->next;
+	
+}
+x=head;
+y=s;
+return y;
+
+}
+
+int main()
+{
+	node*root=NULL;
+	push(&root,5);
+	push(&root,4);
+	push(&root,3);
+	push(&root,2);
+	push(&root,1);
+	root->random=root->next->next;
+	root->next->random=root;
+	root->next->next->random=root->next->next->next->next;
+	root->next->next->next->random=root->next->next;
+	root->next->next->next->next->random=root->next;
+	print(root);
+	node*root2=clone(root);
+	cout<<"Clone list is \n";
+	print(root2);
+	cout<<root2->random->next->data;
+	return 0;
+}
