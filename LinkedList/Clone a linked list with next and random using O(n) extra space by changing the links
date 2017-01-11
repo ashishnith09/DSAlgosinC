@@ -1,0 +1,116 @@
+#include<iostream>
+#include<map>
+using namespace std;
+
+typedef class Node
+{
+	public:
+		int data;
+		class Node*next;
+		class Node*random;
+		Node(int d)
+		{
+			data=d;
+			next=NULL;
+			random=NULL;
+		}
+}node;
+
+void push(node**headf,int d)
+{
+	node*n=new Node(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+	cout<<"NULL"<<endl;
+}
+
+node*clone(node*head)
+{
+if(head==NULL)
+return NULL;
+node*x=head;
+node*y=new node(x->data);
+node*s=y;
+x=x->next;
+while(x)
+{
+y->next=new node(x->data);
+y=y->next;
+x=x->next;
+}
+y->next=NULL;
+
+x=head;
+y=s;
+
+//store next value of original list in hashmap
+map<node*,node*>mp;
+while(x)
+{
+	node*next=x->next;
+	mp.insert(pair<node*,node*>(x,x->next));
+	x=x->next;
+}
+x=head;
+
+while(x && y)
+{
+node*next=x->next;
+x->next=y;
+y->random=x;
+x=next;
+y=y->next;
+}
+
+y=s;
+//setting random pointer;
+while(y)
+{
+	y->random=y->random->random->next;
+	y=y->next;
+}
+
+//resotre x again
+x=head;
+map<node*,node*>::iterator it;
+
+while(x)
+{
+	it=mp.find(x);
+	x->next=it->second;
+	x=x->next;
+}
+return s;
+}
+
+int main()
+{
+	node*root=NULL;
+	push(&root,5);
+	push(&root,4);
+	push(&root,3);
+	push(&root,2);
+	push(&root,1);
+	root->random=root->next->next;
+	root->next->random=root;
+	root->next->next->random=root->next->next->next->next;
+	root->next->next->next->random=root->next->next;
+	root->next->next->next->next->random=root->next;
+	print(root);
+	cout<<"Clone list is "<<endl;
+	node*root2=clone(root);
+	print(root2);
+	cout<<root2->random->random->data<<endl;
+	cout<<"print original list"<<endl;
+	print(root);
+	return 0;
+}
