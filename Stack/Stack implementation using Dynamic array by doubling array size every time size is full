@@ -1,0 +1,71 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<limits.h>
+
+typedef struct Stack
+{
+	int top;
+	int capacity;
+	int*array;
+}stack;
+
+stack*createstack(int capacity)
+{
+	stack*s=(stack*)malloc(sizeof(stack));
+	s->capacity=capacity;
+	s->top=-1;
+	s->array=(int*)malloc(sizeof(int)*s->capacity);
+	return s;
+}
+
+void doublestack(stack*s)
+{
+	s->capacity=s->capacity*2;
+	s->array=(int*)realloc(s->array,sizeof(int)*s->capacity);
+	printf("Size dooubled\n");
+}
+
+int Isfull(stack*s)
+{
+	return (s->top==s->capacity-1);
+}
+
+int Isempty(stack*s)
+{
+	return (s->top==-1);
+}
+
+void push(stack*s,int d)
+{
+	if(Isfull(s))
+	doublestack(s);
+	
+	s->array[++s->top]=d;
+	printf("Element %d pushed to stack\n",d);
+}
+
+int pop(stack*s)
+{
+	if(Isempty(s))
+	return INT_MIN;
+	
+	return s->array[s->top--];
+}
+
+int main()
+{
+	stack*s=createstack(2);
+	push(s,1);
+	push(s,2);
+	push(s,3);
+	push(s,4);
+	push(s,5);
+	
+	printf("element popped is =%d\n",pop(s));
+	printf("element popped is =%d\n",pop(s));
+	printf("element popped is =%d\n",pop(s));
+	printf("element popped is =%d\n",pop(s));
+	printf("element popped is =%d\n",pop(s));
+	printf("element popped is =%d\n",pop(s));
+	return 0;
+}
