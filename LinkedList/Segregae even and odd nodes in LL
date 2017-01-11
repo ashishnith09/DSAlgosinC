@@ -1,0 +1,96 @@
+#include<iostream>
+using namespace std;
+
+typedef class Node
+{
+	public:
+		int data;
+		class Node*next;
+		Node(int d)
+		{
+			data=d;
+			next=NULL;
+		}
+}node;
+
+void push(node**headf,int d)
+{
+	node*n=new node(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+void print(node*head)
+{
+	while(head)
+	{
+		cout<<head->data<<"->";
+		head=head->next;
+	}
+cout<<"NULL\n";
+}
+
+void oddeven(node*head,node**odd,node**even)
+{
+	node*curr=head;
+	node*next;
+	node*o,*e;
+	while(curr)
+	{
+	next=curr->next;
+	if((curr->data)%2==0)	
+	{
+		if(*even==NULL)
+		{
+		*even=curr;
+		e=curr;
+		e->next=NULL;
+	   }
+	else
+		{
+		 e->next=curr;
+		 e=e->next;
+		 e->next=NULL;
+		}
+	}
+	else
+	{
+	if(*odd==NULL)
+		{
+		*odd=curr;
+		o=curr;
+		o->next=NULL;
+	   }
+	else
+		{
+		 o->next=curr;
+		 o=o->next;
+		 o->next=NULL;
+		}	
+	}
+	curr=next;
+	}
+	//merge odd and even
+	e->next=*odd;
+	print(*even);
+}
+
+int main()
+{
+	node*root=NULL;
+	int n;
+	cout<<"No of elements to insert";
+	cin>>n;
+	int x;
+	cout<<"enter the values\n";
+	for(int i=0;i<n;i++)
+	{
+		cin>>x;
+		push(&root,x);
+	}
+	print(root);
+	cout<<"odd and even lists are\n";
+	node*o=NULL,*e=NULL;
+	oddeven(root,&o,&e);
+	return 0;
+}
