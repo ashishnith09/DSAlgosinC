@@ -1,0 +1,137 @@
+/*
+Algorithm
+1. Scan the infix expression from left to right.
+2. If the scanned character is an operand, output it.
+3. Else,
+…..3.1 If the precedence of the scanned operator is greater than the precedence of the operator in the stack(or the stack is empty), push it.
+…..3.2 Else, Pop the operator from the stack until the precedence of the scanned operator is less-equal to the precedence of the operator residing on the top of the stack. Push the scanned operator to the stack.
+4. If the scanned character is an ‘(‘, push it to the stack.
+5. If the scanned character is an ‘)’, pop and output from the stack until an ‘(‘ is encountered.
+6. Repeat steps 2-6 until infix expression is scanned.
+7. Pop and output from the stack until it is not empty.
+
+*/
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+typedef struct Stack
+{
+	int top;
+	unsigned capacity;
+	char*array;
+}stack;
+
+stack*createstack(int capacity)
+{
+	stack*s=(stack*)malloc(sizeof(stack));
+	s->top=-1;
+	s->capacity=capacity;
+	s->array=(char*)malloc(sizeof(char)*s->capacity);
+	return s;
+}
+
+int Isempty(stack*s)
+{
+	return s->top==-1;
+}
+
+int Isfull(stack*s)
+{
+	return s->top==s->capacity-1;
+}
+
+void push(stack*s,char d)
+{
+if(Isfull(s))
+{
+	printf("Stack i full\n");;
+	return;
+}
+s->array[++s->top]=d;
+
+}
+
+char pop(stack*s)
+{
+	if(Isempty(s))
+	{
+		return (char)INT_MIN;
+	}
+	return s->array[s->top--]	;
+}
+
+int isoperand(char ch)
+{
+	return (ch>='a' && ch<='z')||(ch>='A' && ch<='Z');
+}
+
+int pre(char ch)
+{
+	switch(ch)
+	{
+		case '+':
+		case '-':
+		return 1;
+		
+		case '*':
+		case '/':
+		return 2;
+		
+		case '^':
+		return 3;
+	}
+	return -1;
+}
+
+char peek(stack*s)
+{
+	return s->array[s->top];
+}
+
+void infixtopostfix(char*exp)
+{
+	int i,k;
+	char ch;
+	stack*s=createstack(strlen(exp));
+	for(i=0,k=-1;exp[i];i++)
+	{
+		if(isoperand(exp[i]))
+		exp[++k]=exp[i];
+		
+		else if(exp[i]=='(')
+		push(s,exp[i]);
+		
+		else if(exp[i]==')')
+		{
+			
+			while(!Isempty(s)&&s->array[s->top]!='(')
+			exp[++k]=pop(s);
+			if(!Isempty(s) &&s->array[s->top]!='(')
+			return;
+			else
+			pop(s);
+		}
+		else
+		{
+			while(!Isempty(s) && pre(exp[i])<=pre(peek(s)))
+			exp[++k]=pop(s);
+			push(s,exp[i]);
+			
+		}
+	}
+	
+	while(!Isempty(s))
+	exp[++k]=pop(s);
+	
+	exp[++k]='\0';
+	printf("%s",exp);
+}
+
+int main()
+{
+	char exp[]="a+b*(c^d-e)^(f+g*h)-i";
+	int size=sizeof(exp)/sizeof(exp[0]);
+	infixtopostfix(exp);
+	return 0;
+}
