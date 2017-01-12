@@ -1,0 +1,95 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<limits.h>
+
+using namespace std;
+
+typedef struct Stack
+{
+	int top;
+	int capacity;
+	char*arr;
+}stack;
+
+stack*createstack(int d)
+{
+	stack*s=(stack*)malloc(sizeof(stack));
+	s->capacity=d;
+	s->top=-1;
+	s->arr=(char*)malloc(sizeof(char)*d);
+	return s;
+}
+
+int Isfull(stack*s)
+{
+	return s->top==s->capacity-1;
+}
+
+int Isempty(stack*s)
+{
+	return s->top==-1;
+}
+
+void push(stack*s,char ch)
+{
+	if(Isfull(s))
+	{
+		printf("stack is full\n");
+		return;
+	}
+	s->arr[++s->top]=ch;
+}
+
+char pop(stack*s)
+{
+	if(Isempty(s))
+	{
+		printf("stack is full\n");
+		return (char)INT_MIN;
+	}
+	
+	return s->arr[s->top--];
+}
+
+int check(stack*s,char*str,int size)
+{
+	int i=0;
+	while(str[i])
+	{
+		if(str[i]=='{' || str[i]=='['|| str[i]=='(')
+		push(s,str[i]);
+		else if(str[i]=='}' || str[i]==']' || str[i]==')')
+		{
+		if(Isempty(s))
+		{
+			printf("Symbols not balances");
+			return 0;
+		}
+		char p=pop(s);
+		if(p=='{' && str[i]!='}')
+		return 0;
+		else if(p=='[' && str[i]!=']')
+		return 0;
+		else if(p=='(' && str[i]!=')')
+		return 0;
+		
+		}			
+		i++;
+	}
+	if(Isempty(s))
+	return 1;
+	else
+	return 0;
+}
+
+int main()
+{
+	char arr[]="({{a+b})+(c-d)";
+	int size=sizeof(arr)/sizeof(arr[0]);
+	stack*s=createstack(size);
+	if(check(s,arr,size))
+	printf("Expression is balanced\n");
+	else
+	printf("Expression is not balanced\n");
+	return 0;
+}
