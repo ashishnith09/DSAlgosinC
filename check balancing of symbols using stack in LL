@@ -1,0 +1,88 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<limits.h>
+
+typedef struct Node
+{
+	char data;
+	struct Node*next;
+}node;
+
+node*createnode(char d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+int Isempty(node*s)
+{
+	return (s==NULL);
+}
+
+void push(node**top,char d)
+{
+	node*n=createnode(d);
+	n->next=*top;
+	*top=n;
+}
+
+char pop(node**top)
+{
+	if(Isempty(*top))
+	{
+		printf("Stack is empty");
+		return (char)INT_MIN;
+	}
+	
+	node*temp=*top;
+	*top=(*top)->next;
+	char ch=temp->data;
+	free(temp);
+	return ch;
+}
+
+int check(node**root,char *exp,int size)
+{
+	int i=0;
+	while(i<size)
+	{
+		if(exp[i]=='{' || exp[i]=='(' || exp[i]=='[')
+		push(root,exp[i]);
+		else if(exp[i]=='}' || exp[i]==')' || exp[i]==']')
+		{
+			if(Isempty(*root))
+			{
+				printf("symbols are not balanced");
+				return 0;
+			}
+			
+			char ch=pop(root);
+			if(ch=='{' && exp[i]!='}')
+			return 0;
+			else if(ch=='(' && exp[i]!=')')
+			return 0;
+			else if(ch=='[' && exp[i]!=']')
+			return 0;
+		}
+		i++;
+	}
+	if(Isempty(*root))
+	return 1;
+	else
+	return 0;
+}
+
+int main()
+{
+	node*root=NULL;
+	char exp[]="()(})";
+	int size=sizeof(exp)/sizeof(exp[0]);
+	if(check(&root,exp,size))
+	printf("Expression is balanced\n");
+	else
+	printf("Expression is not balanced\n");
+	
+	return 0;
+}
