@@ -1,0 +1,113 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Stack
+{
+	int top;
+	unsigned capacity;
+	int*array;
+}stack;
+
+stack*createstack(unsigned capacity)
+{
+	stack*s=(stack*)malloc(sizeof(stack));
+	s->capacity=capacity;
+	s->top=-1;
+	s->array=(int*)malloc(sizeof(s->capacity)*sizeof(int));
+	return s;
+}
+
+int Isfull(stack*s)
+{
+	return(s->top==s->capacity-1);
+}
+
+int Isempty(stack*s)
+{
+	return(s->top==-1);
+}
+
+void push(stack*s,stack*t,int d)
+{
+	if(Isfull(s))
+	{
+printf("Stack is full\n");
+	return;
+}
+	s->array[++s->top]=d;
+	printf("Element %d pushed to stack\n",d);
+	if(t->top==-1)
+	{
+		t->array[++t->top]=d;
+		return;
+	}
+	if(d<t->array[t->top])
+	t->array[++t->top]=d;
+	else
+	{
+		int k=t->array[t->top];
+		t->array[++t->top]=k;
+	}
+}
+int pop(stack*s,stack*t)
+{
+if(Isempty(s))
+{
+	printf("Stack is empty\n");
+return INT_MIN;
+}
+if(Isempty(t))
+{
+	printf("Stack is empty\n");
+return INT_MIN;
+}
+printf("Popped element is = %d\n",s->array[s->top]);
+s->array[s->top--];
+t->array[t->top--];
+}
+
+int peek(stack*t)
+{
+	if(Isempty(t))
+	return INT_MIN;
+	
+	return t->array[t->top];
+}
+
+int getminimum(stack*t)
+{
+	if(Isempty(t))
+	return INT_MIN;
+	
+	return peek(t);
+}
+
+int main()
+{
+	stack*s=createstack(10);
+	stack*t=createstack(10);
+	push(s,t,7);
+	printf("minimum element is = %d\n ",getminimum(t));
+	push(s,t,4);
+	printf("minimum element is = %d\n ",getminimum(t));
+	push(s,t,5);
+	push(s,t,1);
+	printf("minimum element is = %d \n",getminimum(t));
+	push(s,t,3);
+	push(s,t,2);
+	printf("minimum element is = %d \n",getminimum(t));
+	pop(s,t);
+	printf("minimum element is = %d \n",getminimum(t));
+	pop(s,t);
+	printf("minimum element is = %d \n",getminimum(t));
+	pop(s,t);
+	printf("minimum element is = %d \n",getminimum(t));
+	pop(s,t);
+	printf("minimum element is = %d \n",getminimum(t));
+	pop(s,t);
+	printf("minimum element is = %d \n",getminimum(t));
+	pop(s,t);
+	printf("minimum element is = %d \n",getminimum(t));
+	
+	return 0;
+}
