@@ -1,0 +1,93 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Stack
+{
+	int top1;
+	int top2;
+	unsigned capacity;
+	int*array;
+}stack;
+
+stack*createstack(unsigned capacity)
+{
+	stack*s=(stack*)malloc(sizeof(stack));
+	s->capacity=capacity;
+	s->top1=-1;
+	s->top2=capacity;
+	s->array=(int*)malloc(sizeof(s->capacity)*sizeof(int));
+	return s;
+}
+
+void push1(stack*s,int d)
+{
+if(s->top1<s->top2-1)
+{
+	s->array[++s->top1]=d;
+}
+else
+{
+	printf("Stack overflow");
+	return;
+}
+}
+
+void push2(stack*s,int d)
+{
+if(s->top1<s->top2-1)
+{
+	s->array[--s->top2]=d;
+}
+else
+{
+	printf("Stack overflow");
+	return;
+}
+}
+
+int pop1(stack*s)
+{
+if(s->top1>=0)
+{
+	int x=s->array[s->top1--];
+	return x;
+}
+else
+{
+	printf("Stack underflow");
+	exit(1);
+}
+
+}
+
+int pop2(stack*s)
+{
+if(s->top2<s->capacity)
+{
+	int x=s->array[s->top2++];
+	return x;
+}
+else
+{
+	printf("Stack underflow");
+	exit(1);
+}
+
+}
+
+
+int main()
+{
+	stack*s=createstack(7);
+	push1(s,1);
+	push2(s,2);
+	push1(s,3);
+	push1(s,4);
+	push2(s,5);
+	push2(s,6);
+
+printf("pooped element is = %d\n",pop1(s));
+printf("pooped element is = %d\n",pop2(s));
+
+	return 0;
+}
