@@ -1,0 +1,102 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<limits.h>
+
+typedef struct kstack {
+	int *top;
+	int *next;
+	int n,k,free;
+	int* array;
+}Stack;
+
+Stack *createStack(int k, int n) {
+	Stack *stack = (Stack *) malloc(sizeof(Stack));
+	stack->n = n;
+	stack->k = k;
+	stack->free = 0;
+	stack->top = (int *) malloc(sizeof(int)*k);
+	stack->next = (int *) malloc(sizeof(int) * n);
+	stack->array = (int *) malloc(sizeof(int) * n);
+	
+	int i;
+	for(i=0;i<k;i++)
+		stack->top[i] = -1;
+		
+	for(i=0;i<n-1;i++)
+		stack->next[i] = i+1;
+	stack->next[i] = -1;
+	
+	return stack;
+}
+
+int isFull(Stack *stack) {
+	return stack->free == -1;
+}
+
+int isEmpty(Stack *stack,int sn) {
+	return stack->top[sn] == -1;
+}
+
+void push(Stack *stack, int sn, int item) {
+	if(isFull(stack)){
+		printf("Stack overflow\n");
+		return;
+	}
+	int i = stack->free;
+	stack->free = stack->next[i];
+	stack->next[i] = stack->top[sn];
+	stack->top[sn] = i;
+	stack->array[i] = item;
+	printf("%d pushed to stack %d.\n",item,sn);
+}
+
+int pop(Stack *stack, int sn) {
+	if(isEmpty(stack,sn)) {
+		printf("Stack underflow\n");
+		return INT_MIN;
+	}
+	
+	int i = stack->top[sn];
+	stack->top[sn] = stack->next[i];
+	stack->next[i] = stack->free;
+	stack->free = i;
+	
+	return stack->array[i];
+}
+
+int peek(Stack *stack,int sn) {
+	if(isEmpty(stack,sn)) {
+		printf("Stack underflow\n");
+		return INT_MIN;
+	}
+	return stack->array[stack->top[sn]];
+}
+
+void print(Stack *stack, int sn) {
+	int i;	
+	for(i=stack->top[sn];i!=-1;i=stack->next[i])
+		printf("%d ",stack->array[i]);
+	
+	printf("\n");
+}
+
+int main() {
+	Stack *s = createStack(3,10);
+	
+	push(s,0,4);
+	push(s,0,9);
+	push(s,0,7);
+	print(s,0);
+	push(s,1,16);
+	push(s,1,2);
+	push(s,1,8);
+	print(s,1);
+	push(s,2,86);
+	push(s,2,22);
+	push(s,2,55);
+	push(s,2,90);
+	print(s,2);
+	push(s,0,77);
+	print(s,0);
+	return 0;
+}
