@@ -1,0 +1,46 @@
+#include<iostream>
+using namespace std;
+
+void print(char s[],int n)
+{
+	int i=0;
+	while(s[i])
+	{
+		printf("%c",s[i]);
+		i++;
+	}
+}
+
+void removeduplicates(char*str,int n)
+{
+	int strpt=-1;
+	int i=0;
+	while(i<n)
+	{
+		if(strpt==-1 || str[strpt]!=str[i])
+		{
+			strpt++;
+			str[strpt]=str[i];
+			i++;
+		}
+		else
+		{
+			while(str[strpt]==str[i] && i<n)
+			{
+				strpt--;
+				i++;
+			}
+		}
+	}
+	str[strpt+1]='\0';
+}
+
+int main()
+{
+	char str[]="mississippi";
+	int n=sizeof(str)/sizeof(str[0]);
+	
+	removeduplicates(str,n);
+	print(str,n);
+	return 0;
+}
