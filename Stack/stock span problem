@@ -1,0 +1,39 @@
+#include<iostream>
+#include<stack>
+using namespace std;
+
+void calculatespan(int price[],int n,int s[])
+{
+	if(n==0)
+	return;
+	stack<int>st;
+	//push first element
+	st.push(0);
+	s[0]=1;
+	
+	for(int i=1;i<n;i++)
+	{
+		while((!st.empty())&& price[st.top()]<=price[i])
+		st.pop();
+		
+		s[i]=(st.empty())?i+1:i-st.top();
+		
+		st.push(i);
+	}
+}
+
+void printspan(int s[],int n)
+{
+	int i;
+	for(i=0;i<n;i++)
+	cout<<s[i]<<endl;
+}
+
+int main()
+{
+	int price[]={10,4,5,90,120,80};
+	int n=sizeof(price)/sizeof(price[0]);
+	int s[n];
+	calculatespan(price,n,s)	;
+	printspan(s,n);
+}
