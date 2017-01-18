@@ -48,7 +48,7 @@ void nextgreaterelement::nextgreater(int a[],int n)
 	}
 	while(!st.empty())
 	{
-		cout<<"next greater element for "<<a[st.top()]<<" is "<<a[st.top()]<<"  At array index  "<<st.top()<<endl;
+		cout<<"next greater element for "<<a[st.top()]<<" is "<<-1<<"  At array index  "<<st.top()<<endl;
 		st.pop();
 	}
 }
@@ -56,7 +56,7 @@ void nextgreaterelement::nextgreater(int a[],int n)
 int main()
 {
 	nextgreaterelement n;
-	int a[]={7,9};
+	int a[]={7,3,9,6,8,2,5};
 	int size=sizeof(a)/sizeof(a[0]);
 	n.nextgreater(a,size);
 	return 0;
