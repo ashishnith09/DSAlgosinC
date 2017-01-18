@@ -1,0 +1,63 @@
+#include<iostream>
+#include<stack>
+#include<stdlib.h>
+using namespace std;
+
+class nextgreaterelement
+{
+	private:
+		int a[];
+	public:
+	void nextgreater(int [],int);
+};
+
+void nextgreaterelement::nextgreater(int a[],int n)
+{
+	//create stack
+	stack<int>st;
+	if(n==1)
+	{
+		cout<<a[0];
+		exit(0);
+	}
+	int i=0;
+	st.push(i);
+	i=1;
+	while(i<n)
+	{
+		if(a[i]<a[st.top()])
+		{
+			st.push(i);
+		}
+		else if(a[st.top()]<a[i])
+		{
+		while(!st.empty())
+		{
+			if(a[st.top()]<a[i])
+			{
+			cout<<"next greater element for "<<a[st.top()]<<" is "<<a[i]<<"  At array index  "<<st.top()<<endl;
+			st.pop();
+		}
+		else
+		break;
+		}
+		st.push(i);
+		}
+
+		i++;
+	}
+	while(!st.empty())
+	{
+		cout<<"next greater element for "<<a[st.top()]<<" is "<<a[st.top()]<<"  At array index  "<<st.top()<<endl;
+		st.pop();
+	}
+}
+
+int main()
+{
+	nextgreaterelement n;
+	int a[]={7,9};
+	int size=sizeof(a)/sizeof(a[0]);
+	n.nextgreater(a,size);
+	return 0;
+}
