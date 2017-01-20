@@ -1,0 +1,102 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+typedef struct Queue
+{
+	node*front,*rear;
+}queue;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+queue*createqueue()
+{
+	queue*q=(queue*)malloc(sizeof(queue));
+	q->front=NULL;
+	q->rear=NULL;
+	return q;
+}
+
+void enqueue(queue*q,int d)
+{
+	node*n=createnode(d);
+	if(q->rear==NULL)
+	{
+		q->front=q->rear=n;
+		printf("Element %d is interted to Queue\n",d);
+		return;
+	}
+	q->rear->next=n;
+	q->rear=n;
+	printf("Element %d is interted to Queue\n",d);
+}
+
+int Isempty(queue*q)
+{
+	return q->front==NULL;
+}
+
+node*dequeue(queue*q)
+{
+	if(Isempty(q))
+	{
+		printf("Queue is empty");
+		return NULL;
+	}
+	
+	node*temp=q->front;
+	q->front=q->front->next;
+	if(q->front==NULL)
+	q->rear=NULL;
+	return temp;
+}
+
+node*front(queue*q)
+{
+	if(Isempty(q))
+	{
+		printf("Queue is empty");
+		return NULL;
+	}
+	
+	return q->front;
+}
+
+node*rear(queue*q)
+{
+	if(Isempty(q))
+	{
+		printf("Queue is empty");
+		return NULL;
+	}
+	
+	return q->rear;
+}
+
+int main()
+{
+	queue*q=createqueue();
+	enqueue(q,9);
+	enqueue(q,3);
+	enqueue(q,4);
+	enqueue(q,2);
+	node*n=dequeue(q);
+	if(n!=NULL)
+	printf("Element %d is removed from queue\n",n->data);
+	node*f,*r;
+	f=front(q);
+	r=rear(q);
+	printf("Element at front and rear are = %d and %d\n",f->data,r->data);
+	return 0;
+}
