@@ -1,0 +1,74 @@
+// A C program to demonstrate linked list based implementation of queue
+#include <stdlib.h>
+#include <stdio.h>
+
+struct QNode;
+struct QNode*rear=NULL,*front=NULL;
+// A linked list (LL) node to store a queue entry
+struct QNode
+{
+	int key;
+	struct QNode *next;
+};
+
+// The queue, front stores the front node of LL and rear stores ths
+// last node of LL
+// A utility function to create a new linked list node.
+struct QNode* newNode(int k)
+{
+	struct QNode *temp = (struct QNode*)malloc(sizeof(struct QNode));
+	temp->key = k;
+	temp->next = NULL;
+	return temp; 
+}
+
+// The function to add a key k to q
+void enQueue(int k)
+{
+	// Create a new LL node
+	struct QNode *temp = newNode(k);
+
+	// If queue is empty, then new node is front and rear both
+	if (rear == NULL)
+	{
+	front = rear = temp;
+	return;
+	}
+
+	// Add the new node at the end of queue and change rear
+	rear->next = temp;
+	rear = temp;
+}
+
+// Function to remove a key from given queue q
+struct QNode *deQueue()
+{
+	// If queue is empty, return NULL.
+	if (front == NULL)
+	return NULL;
+
+	// Store previous front and move front one node ahead
+	struct QNode *temp = front;
+	front = front->next;
+
+	// If front becomes NULL, then change rear also as NULL
+	if (front == NULL)
+	rear = NULL;
+	return temp;
+}
+
+// Driver Program to test anove functions
+int main()
+{
+	enQueue(10);
+	enQueue(20);
+	deQueue();
+	deQueue();
+	enQueue(30);
+	enQueue(40);
+	enQueue(50);
+	struct QNode *n = deQueue();
+	if (n != NULL)
+	printf("Dequeued item is %d", n->key);
+	return 0;
+}
