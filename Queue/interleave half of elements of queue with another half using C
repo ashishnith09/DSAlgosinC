@@ -1,0 +1,135 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+typedef struct Queue
+{
+	node*rear,*front;
+}queue;
+
+typedef struct Stack
+{
+	node*top;
+}stack;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+queue*createqueue()
+{
+queue*q=(queue*)malloc(sizeof(queue));
+q->front=q->rear=NULL;
+return q;
+}
+
+stack*createstack()
+{
+	stack*s=(stack*)malloc(sizeof(stack));
+	s->top=NULL;
+	return s;
+}
+
+void enqueue(queue*q,int d)
+{
+	node*n=createnode(d);
+	if(q->rear)
+	q->rear->next=n;
+	q->rear=n;
+	
+	if(q->front==NULL)
+	q->front=q->rear;
+	
+	printf("Element %d intserted to queue\n",d);
+}
+
+node*dequeue(queue*q)
+{
+	if(q->front==NULL)
+	{
+		printf("Queue is empty\n");
+		exit(0);
+	}
+	node*temp=q->front;
+	q->front=q->front->next;
+	if(q->front==NULL)
+	q->rear=NULL;
+	printf("Element dequeued is %d \n",temp->data);
+	return temp;
+}
+
+void push(node**headf,node*n)
+{
+n->next=*headf;
+*headf=n;	
+}
+
+int pop(node**top)
+{
+	node*temp=(*top);
+	(*top)=(*top)->next;
+	int data=temp->data;
+	free(temp);
+	return data;
+}
+
+void interleave(queue*q,int size)
+{
+if(size%2!=0)	
+return;
+
+stack*s=createstack();
+int h=size/2,i;
+for(i=0;i<h;i++)
+push(&s->top,dequeue(q));
+
+while(s->top!=NULL)
+enqueue(q,pop(&s->top));
+
+for(i=0;i<h;i++)
+enqueue(q,dequeue(q)->data);
+
+for(i=0;i<h;i++)
+push(&s->top,dequeue(q));
+
+while(s->top!=NULL)
+{
+	enqueue(q,pop(&s->top));
+	enqueue(q,dequeue(q)->data);
+}
+
+}
+
+int main()
+{
+int i=0;
+queue*q=createqueue();
+enqueue(q,10);
+i++;
+enqueue(q,20);
+i++;
+enqueue(q,30);
+i++;
+enqueue(q,40);
+i++;
+enqueue(q,50);
+i++;
+enqueue(q,60);
+i++;
+interleave(q,i);
+while(q->front!=NULL)
+{
+	printf("%d\n",dequeue(q)->data);
+}
+
+return 0;
+}
