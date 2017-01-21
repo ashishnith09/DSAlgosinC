@@ -1,0 +1,66 @@
+#include<iostream>
+#include<queue>
+using namespace std;
+
+class stack
+{
+	queue<int>q;
+	public:
+		void push(int val);
+		int pop();
+		int top();
+		int empty();
+};
+
+int stack::top()
+{
+	if(q.empty())
+	return -1;
+	else
+	return q.front();
+}
+
+int stack::empty()
+{
+	if(q.empty())
+	return 1;
+	else
+	return 0;
+}
+
+void stack::push(int val)
+{
+	int s=q.size();
+	q.push(val);
+	
+	for(int i=0;i<s;i++)
+	{
+		q.push(q.front());
+		q.pop();
+	}
+}
+
+int stack::pop()
+{
+if(q.empty())	
+cout<<"Empty stack\n";
+else
+q.pop();
+}
+
+int main()
+{
+	stack s;
+	s.push(10);
+	s.push(20);
+	s.push(30);
+	cout<<s.top()<<endl;
+	s.pop();
+	cout<<s.top()<<endl;
+	s.pop();
+	cout<<s.top()<<endl;
+	s.pop();
+	cout<<s.top()<<endl;
+	s.pop();
+	return 0;
+}
