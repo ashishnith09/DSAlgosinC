@@ -1,0 +1,82 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+typedef struct Queue
+{
+	node*stack1;
+}queue;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+queue*createqueue()
+{
+	queue*q=(queue*)malloc(sizeof(queue));
+	q->stack1=NULL;
+	return q;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+int pop(node**headf)
+{
+	node*temp=*headf;
+	(*headf)=(*headf)->next;
+	int d=temp->data;
+	free(temp);
+	return d;
+}
+
+void enqueue(queue*q,int d)
+{
+	push(&q->stack1,d);
+	printf("Element %d enqueued\n",d);
+}
+
+int dequeue(queue*q)
+{
+	if(q->stack1==NULL)
+	{
+		printf("Queue is empty");
+		exit(0);
+	}
+	
+	if(q->stack1->next==NULL)
+	{
+		return pop((&q->stack1));
+	}
+	else
+	{
+		int x=pop((&q->stack1));
+		int res=dequeue(q);
+		
+		push(&q->stack1,x);
+		return res;
+	}
+}
+
+int main()
+{
+	queue*q=createqueue();
+	enqueue(q,10);
+	enqueue(q,20);
+	enqueue(q,30);
+	printf("Element dequed is = %d\n",dequeue(q));
+	return 0;
+}
