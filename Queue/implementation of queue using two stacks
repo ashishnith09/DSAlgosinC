@@ -1,0 +1,90 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+}node;
+
+typedef struct Queue
+{
+node*stack1;
+node*stack2;	
+}queue;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+queue*createqueue()
+{
+	queue*q=(queue*)malloc(sizeof(queue));
+	q->stack1=NULL;
+	q->stack2=NULL;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+int pop(node**headf)
+{
+	if(*headf==NULL)
+	{
+		printf("Stack underflow\n");
+		exit(0);
+	}
+	node*temp=*headf;
+	(*headf)=(*headf)->next;
+	int d=temp->data;
+	free(temp);
+	return d;
+}
+
+void enqueue(queue*q,int d)
+{
+	push((&q->stack1),d);
+	printf("Element %d enqueued\n",d);
+}
+
+int dequeue(queue*q)
+{
+	if(q->stack1 == NULL && q->stack2 == NULL)
+    {
+        printf("Q is empty");
+        getchar();
+        exit(0);
+    }
+	if(q->stack2==NULL)
+	{
+		while(q->stack1!=NULL)
+		{
+			push((&q->stack2),pop((&q->stack1)));
+		}
+		return pop((&q->stack2));
+	}
+	else
+	{
+		return pop((&q->stack2));
+	}
+}
+
+int main()
+{
+	queue*q=(queue*)malloc(sizeof(queue));
+	q->stack1=NULL;
+	q->stack2=NULL;
+	enqueue(q,10);
+	enqueue(q,20);
+	enqueue(q,30);
+	
+	printf("Element dequed is = %d\n",dequeue(q));
+}
