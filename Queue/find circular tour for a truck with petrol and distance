@@ -1,0 +1,52 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct PetrolPump
+{
+int petrol;
+int distance;
+}petrolpump;
+
+int tour(petrolpump arr[],int n)
+{
+int start=0;
+int current=(start+1)%n;
+int curr_petrol=arr[start].petrol-arr[start].distance;
+
+while(1)
+{
+if(curr_petrol<0)
+{
+curr_petrol=arr[current].petrol-arr[current].distance;
+int temp=start;
+start=current;
+if(start<=temp)
+return -1;
+
+current=(current+1)%n;
+}
+else
+{
+if(current==start)
+return start;
+
+curr_petrol=curr_petrol+arr[current].petrol-arr[current].distance;
+current=(current+1)%n;
+}
+}
+return start;
+}
+
+int main()
+{
+petrolpump arr[]={{4,6},{6,5},{7,3},{5,11},{4,1}};
+int n=sizeof(arr)/sizeof(arr[0]);
+int start=tour(arr,n);
+
+if(start==-1)
+printf("No solution");
+else
+printf("Start= %d",start);
+
+return 0;
+}
