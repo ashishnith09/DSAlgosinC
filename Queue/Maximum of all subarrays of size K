@@ -18,7 +18,7 @@ void printKmax(int a[],int k,int n)
 	{
 		cout<<a[q.front()]<<endl;
 		
-		while(!q.empty() && q.front()<=i-k)
+		if(!q.empty() && q.front()<=i-k)
 		q.pop_front();
 		
 		while(!q.empty() && a[i]>=a[q.back()])
