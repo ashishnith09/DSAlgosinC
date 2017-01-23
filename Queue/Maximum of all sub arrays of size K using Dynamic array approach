@@ -1,0 +1,18 @@
+Dynamic programming Approach :-
+
+For Example: A = [2,1,3,4,6,3,8,9,10,12,56], w=4
+
+partition the array in blocks of size w=4. The last block may have less then w.
+2, 1, 3, 4 | 6, 3, 8, 9 | 10, 12, 56|
+Traverse the list from start to end and calculate min_so_far. Reset min to 0 after each block (of w elements).
+left_min[] = 2, 1, 1, 1 | 6, 3, 3, 3 | 10, 10, 10
+Similarly calculate min_in_future by traversing from end to start.
+right_min[] = 1, 1, 3, 4 | 3, 3, 8, 9 | 10, 12, 56
+now, min at each position i in current window, sliding_min(i) = min {right_min[i], left_min[i+w-1]}
+sliding_min = 1, 1, 3, 3, 3, 3, 8, ….
+
+Here is the code :
+
+http://code.geeksforgeeks.org/...
+
+Complexity : O(N)
