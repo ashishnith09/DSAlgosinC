@@ -1,0 +1,39 @@
+#include<iostream>
+#include<deque>
+using namespace std;
+
+void printKmax(int a[],int k,int n)
+{
+	int i;
+	deque<int> q(k);
+	for(i=0;i<k;i++)
+	{
+		while(!q.empty() && a[i]>=a[q.back()])
+		q.pop_back();
+		
+		q.push_back(i);
+	}
+	
+	for(;i<n;i++)
+	{
+		cout<<a[q.front()]<<endl;
+		
+		while(!q.empty() && q.front()<=i-k)
+		q.pop_front();
+		
+		while(!q.empty() && a[i]>=a[q.back()])
+		q.pop_back();
+		
+		q.push_back(i);
+	}
+	cout<<a[q.front()];
+}
+
+int main()
+{
+	int a[]={12,1,78,90,57,89,56};
+	int size=sizeof(a)/sizeof(a[0]);
+	int k=3;
+	printKmax(a,k,size);
+	return 0;
+}
