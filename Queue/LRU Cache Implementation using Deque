@@ -1,0 +1,152 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX_CACHE_SIZE 10
+
+typedef struct Qnode
+{
+	int data;
+	struct Qnode*next;
+	struct Qnode*prev;
+}qnode;
+
+typedef struct Queue
+{
+int size;
+Qnode*front;
+Qnode*rear;	
+}queue;
+
+queue* createqueue()
+{
+	queue*q=(queue*)malloc(sizeof(queue));
+	q->front=q->rear=NULL;
+	q->size=0;
+	return q;
+}
+
+int Isempty(queue*q)
+{
+	if(q->front==NULL && q->rear==NULL)
+	return 1;
+	
+	return 0;
+}
+/* Enqueue the element and returns the pointer to be stored in hash */
+qnode*enqueue(queue*q,int d)
+{
+	qnode*n=(qnode*)malloc(sizeof(qnode));
+	n->data=d;
+	n->next=NULL;
+	n->prev=q->rear;
+	if(q->rear)
+	{
+		q->rear->next=n;
+	}
+	q->rear=n;
+	if(!q->front)
+	q->front=n;
+	
+	q->size++;
+}
+
+int dequeue(queue*q)
+{
+	if(Isempty(q))
+	{
+		printf("Queue is empty\n");
+		exit(0);
+	}
+	qnode*temp=q->front;
+	q->front=temp->next;
+	if(temp->next)
+	{
+		temp->next->prev=NULL;
+	}
+	else
+	{
+		q->rear=NULL;
+	}
+	int data=temp->data;
+	free(temp);
+	q->size--;
+	return data;
+}
+
+/* This function modifies queue when there is cache hit */
+void updatecache(queue*q,qnode*hash[],int page)
+{
+	/* If the page is at the front of queue, dequeue and 
+    enqueue it again */    
+    if(q->front==hash[page])
+    {
+    	dequeue(q);
+    	enqueue(q,page);
+	}
+	else if(q->rear==hash[page])
+	return;
+	else
+	{
+		qnode*temp=hash[page];
+		temp->prev->next=temp->next;
+		temp->next->prev=temp->prev;
+		q->rear->next=temp;
+		temp->prev=q->rear;
+		q->rear=temp;
+		temp->next=NULL;	
+	}
+}
+
+void printcache(queue*q)
+{
+	qnode*current=q->front;
+	for(int i=0;i<q->size && current;i++)
+	{
+		printf("%d->",current->data);
+		current=current->next;
+	}
+}
+
+int lrucache(queue*q,qnode*hash[],int page)
+{
+	/*Cache Miss and we can add the page in the cache */
+	if(hash[page]==NULL && q->size<MAX_CACHE_SIZE)
+	hash[page]=enqueue(q,page);
+	
+	/*Cache Miss and we can add the page in the cache ,....cache is full..remove front and add this to last*/
+	if(hash[page]==NULL && q->size==MAX_CACHE_SIZE)
+	{
+		dequeue(q);
+		hash[page]=enqueue(q,page);
+	}
+	
+	/* Cache is Hit */
+	if(hash[page]!=NULL)
+	updatecache(q,hash,page);
+	
+	printf("Cache state:\n");
+	printcache(q);
+	
+	return 1;
+}
+
+int main()
+{
+	queue*q;
+	qnode*hash[10];
+	
+	int n;
+	for(int i=0;i<n;i++)
+	hash[i]=NULL;
+	
+	q=createqueue();
+	
+	int pageorder[]={1,2,3,5,4,2,3,2,5,6};
+	
+	int i = 0;
+    while(i<10) {
+        printf("\n Page Requested : %d " , pageorder[i]);
+        lrucache(q, hash, pageorder[i]);
+        i++;
+    };
+    return 0;
+}
