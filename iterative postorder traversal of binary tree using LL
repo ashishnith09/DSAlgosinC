@@ -1,0 +1,111 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+typedef struct Stack
+{
+	node*tnode;
+	struct Stack*next;
+}stack;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+stack*createstacknode(node*n)
+{
+	stack*s=(stack*)malloc(sizeof(stack));
+	s->tnode=n;
+	s->next=NULL;
+	return s;
+}
+
+void push(stack**headf,node*tnode)
+{
+	stack*s=createstacknode(tnode);
+	s->tnode=tnode;
+	s->next=*headf;
+	*headf=s;
+}
+
+node*pop(stack**top)
+{
+	if(*top==NULL)
+	{
+		printf("stack is empty\n");
+		exit(0);
+	}
+	stack*temp=*top;
+	*top=(*top)->next;
+	node*n=temp->tnode;
+	free(temp);
+	return n;
+}
+
+node*stop(stack*top)
+{
+	if(top==NULL)
+	{
+		return NULL;
+	}
+	node*temp=top->tnode;
+	return temp;
+}
+
+void postorder(node*root)
+{
+	stack*top=NULL;
+	if(root==NULL)
+	return;
+	do
+	{
+	while(root)
+	{
+	if(root->right)
+	push(&top,root->right);
+	
+	push(&top,root);
+	root=root->left;
+	}
+	root=pop(&top);
+	if(root->right && root->right==stop(top) )
+	{
+			pop(&top);
+			push(&top,root);
+			root=root->right;
+		
+	}
+	else
+	{
+	printf("%d ",root->data);
+	root=NULL;
+	}
+	}while(top!=NULL);
+}
+
+int main()
+{
+	node*root=NULL;
+	root=createnode(1);
+	root->left=createnode(2);
+	root->right=createnode(3);
+	root->left->left=createnode(4);;
+	root->left->right=createnode(5);
+	root->right->left=createnode(6);
+	root->right->right=createnode(7);
+	
+	printf("Preorder traversal\n");
+	postorder(root);
+	
+	return 0;
+}
