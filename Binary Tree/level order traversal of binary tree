@@ -1,0 +1,99 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+typedef struct Queue
+{
+	node*tnode;
+	struct Queue*next;
+}queue;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+queue*createqueue(node*n)
+{
+	queue*q=(queue*)malloc(sizeof(queue));
+	q->tnode=n;
+	q->next=NULL;
+	return q;
+}
+
+node*dequeue(queue**front,queue**rear)
+{
+if(*front==NULL && *rear==NULL)
+exit(0);
+
+queue*q=*front;
+(*front)=(*front)->next;
+if(*front==NULL)
+*rear=NULL;
+	
+node*temp=q->tnode;
+free(q);
+return temp;
+}
+
+void enqueue(queue**front,queue**rear,node*root)
+{
+	queue*q=createqueue(root);
+	if(*front==NULL)
+	{
+		q->next=*front;
+		*front=q;
+		*rear=q;
+		return;
+	}
+	(*rear)->next=q;
+	*rear=q;	
+}
+
+void levelorder(node*root)
+{
+	if(root==NULL)
+	return;
+	node*temp;
+	queue*rear=NULL,*front=NULL;
+	
+	enqueue(&front,&rear,root);
+	
+	while(front!=NULL && rear!=NULL)
+	{
+		temp=dequeue(&front,&rear);
+		
+		printf("%d ",temp->data);
+		
+		if(temp->left)
+		enqueue(&front,&rear,temp->left);
+		
+		if(temp->right)
+		enqueue(&front,&rear,temp->right);
+	}
+}
+
+int main()
+{
+	node*root=NULL;
+	root=createnode(1);
+	root->left=createnode(2);
+	root->right=createnode(3);
+	root->left->left=createnode(4);;
+	root->left->right=createnode(5);
+	root->right->left=createnode(6);
+	root->right->right=createnode(7);
+	
+	printf("Level order traversal\n");
+	levelorder(root);
+	return 0;
+}
