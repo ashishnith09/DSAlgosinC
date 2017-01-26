@@ -1,0 +1,55 @@
+#include<iostream>
+#include<queue>
+#include<stdlib.h>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+int height(node*root)
+{
+	if(root==NULL)
+	exit(0);
+	queue<node*>q;
+	int c=0;
+	q.push(root);
+	while(!q.empty())
+	{
+		node*temp=q.front();
+		q.pop();
+		if(temp->left || temp->right)
+		c++;
+		
+		if(temp->left)
+		q.push(temp->left);
+		if(temp->right)
+		q.push(temp->right);
+	}
+	return c;
+}
+
+int main()
+{
+	node*root=NULL;
+	root=createnode(1);
+	root->left=createnode(2);
+	root->right=createnode(3);
+	root->left->left=createnode(4);;
+	root->left->right=createnode(5);
+	root->right->left=createnode(6);
+	root->right->right=createnode(7);
+	printf("Height of tree is =%d",height(root));
+	return 0;
+}
