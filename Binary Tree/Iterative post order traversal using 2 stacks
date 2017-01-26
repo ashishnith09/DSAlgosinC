@@ -1,0 +1,63 @@
+#include<iostream>
+#include<stdlib.h>
+#include<stack>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+void postorder(node*root)
+{
+	if(root==NULL)
+	return;
+	stack<node*>s1;
+	stack<node*>s2;
+	
+	s1.push(root);
+	while(!s1.empty())
+	{
+		node*temp=s1.top();
+		s1.pop();
+		s2.push(temp);
+		
+		if(temp->left)
+		s1.push(temp->left);
+		
+		if(temp->right)
+		s1.push(temp->right);
+		
+	}
+	while(!s2.empty())
+	{
+		printf("%d ",s2.top()->data);
+		s2.pop();
+	}
+}
+
+int main()
+{
+	node*root=NULL;
+	root=createnode(1);
+	root->left=createnode(2);
+	root->right=createnode(3);
+	root->left->left=createnode(4);;
+	root->left->right=createnode(5);
+	root->right->left=createnode(6);
+	root->right->right=createnode(7);
+	
+	printf("Iterative post order traversal\n");
+	postorder(root);
+	return 0;
+}
