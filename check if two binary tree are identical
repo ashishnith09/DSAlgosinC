@@ -1,0 +1,47 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+int similar(node*root1,node*root2)
+{
+	if(root1==NULL && root2==NULL)
+	return 1;
+	if((root1==NULL && root2!=NULL)||(root2==NULL && root1!=NULL))
+	return 0;
+	
+	return(similar(root1->left,root2->left)&& similar(root1->right,root2->right) && root1->data==root2->data);
+	
+}
+
+int main()
+{
+	node*root1=NULL;
+	root1=createnode(1);
+	root1->left=createnode(2);
+	root1->right=createnode(3);
+	node*root2=NULL;
+	root2=createnode(1);
+	root2->left=createnode(2);
+	root2->right=createnode(4);
+	
+	if(similar(root1,root2))
+	printf("Similar");
+	else
+	printf("Not similar");
+	
+	return 0;
+}
