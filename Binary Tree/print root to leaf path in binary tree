@@ -1,0 +1,53 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+void print(int a[],int l)
+{
+	for(int i=0;i<l;i++)
+	printf("%d ",a[i]);
+	printf("\n");
+}
+
+void rootleaf(node*root,int l,int a[])
+{
+	if(root==NULL)
+	return;
+	a[l]=root->data;
+	rootleaf(root->left,l+1,a);
+	rootleaf(root->right,l+1,a);
+	if(root->left==NULL && root->right==NULL)
+	print(a,l+1);	
+	
+}
+
+int main()
+{
+	node*root=NULL;
+	root=createnode(1);
+	root->left=createnode(2);
+	root->right=createnode(3);
+	root->left->left=createnode(4);;
+	root->left->right=createnode(5);
+	root->right->left=createnode(6);
+	//root->right->right=createnode(7);
+	int l=0;
+	int a[100];
+	printf("Root to leaf path %d\n");
+	rootleaf(root,l,a);
+	return 0;
+}
