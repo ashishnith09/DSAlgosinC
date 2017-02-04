@@ -1,0 +1,133 @@
+#include <iostream>
+#include <queue>
+#include <stdio.h>
+#include <stdlib.h>
+
+using namespace std;
+
+
+typedef struct node
+{
+    int data;
+
+    struct node*left;
+    struct node *right;
+}TreeNode;
+
+struct myQnode
+{
+    TreeNode **p; //node address
+    int s;        // start index of inroder array
+    int e;		// end index of inroder array
+};
+
+
+TreeNode *newNode(int data)
+{
+    TreeNode *node=(TreeNode *)malloc(sizeof(TreeNode));
+    node->left=node->right=NULL;
+    node->data=data;
+}
+
+int searchindex(int *a, int data , int s, int e)
+{
+    int index=-1;
+
+    for(s; s<=e; s++)
+    {
+        if(a[s] ==  data)
+            index=s;
+    }
+
+    return index;
+}
+void DisplayInorder(TreeNode *node)
+{
+    if(!node) return;
+
+    DisplayInorder(node->left);
+    printf("%d ", node->data);
+    DisplayInorder(node->right);
+}
+
+// que is used to create level wise. and every q node contains that nodes boundaries in inroder array
+// c is used to track the created noded from level wise array
+TreeNode *buildTree_level_in_util(int *in, int *level,int *c, int n, queue <myQnode> &q)
+{
+	// exiting in case q is empty or accessed level array reaches end
+    if(*c>=n || q.size()<=0)
+        return NULL;
+
+    myQnode qNode=q.front(); q.pop();
+    TreeNode **r=qNode.p;
+
+    int s=qNode.s;
+    int e=qNode.e;
+
+	//creating a node by taking the address filled in que iteam it starts with root node address
+    *r=newNode(level[*c]);
+    
+    //c is increamented as we access level wise array
+    (*c)++;
+
+	
+	//find the position of above created node in inorder
+    int i=searchindex(in, (*r)->data, s, e);
+    
+    // position is valid and it is not a leaf node
+    if(i != -1 && s!=e)
+    {
+    
+        // creating q iteam for left node
+        myQnode leftqNode;
+        leftqNode.p=&((*r)->left);
+        leftqNode.s=s;
+        leftqNode.e=i-1;
+
+        q.push(leftqNode);
+
+		// creating q iteam for right node
+        myQnode rightqNode;
+        rightqNode.p=&((*r)->right);
+        rightqNode.s=i+1;
+        rightqNode.e=e;
+
+        q.push(rightqNode);
+    }
+    buildTree_level_in_util(in, level,c,n, q);
+}
+TreeNode *buildTree_level_in(int *in, int *level, int s, int e, int n)
+{
+    int c=0;
+
+    TreeNode *root=NULL;
+    queue <myQnode> q;
+
+    myQnode x;
+    x.p=&root;
+    x.s=s;
+    x.e=e;
+
+    q.push(x);
+
+    buildTree_level_in_util(in, level,&c, n, q);
+
+    return root;
+}
+void testcreatetreelevelinorder()
+{
+    int in[]    = {4, 8, 10, 12, 14, 20, 22};
+    int level[] = {20, 8, 22, 4, 12, 10, 14};
+    int n = sizeof(in)/sizeof(in[0]);
+    TreeNode *root = buildTree_level_in(in, level, 0, n - 1, n);
+
+    /* Let us test the built tree by printing Insorder traversal */
+    printf("Inorder traversal of the constructed tree is \n");
+    DisplayInorder(root);
+}
+
+
+int main() {
+	testcreatetreelevelinorder();
+	return 0;
+}
