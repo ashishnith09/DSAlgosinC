@@ -1,0 +1,76 @@
+#include<iostream>
+#include<stdio.h>
+#include<algorithm>
+#include<queue>
+#include<stack>
+using namespace std;
+typedef long long ll;
+
+struct Node
+{
+    int key;
+    struct Node* left, *right;
+};
+typedef Node node;
+struct ele
+{
+    node * ptr;
+    int st,en;
+};
+Node *newNode(int k)
+{
+    Node *node = new Node;
+    node->key = k;
+    node->right = node->left = NULL;
+    return node;
+}
+node *func(int *in,int *level,int n)
+{
+    if(n==0)return NULL;
+    queue<ele>q;
+    int ind=0;
+    node *root=newNode(level[ind]);
+    q.push({root,0,n-1});
+    ind++;
+    int pos;
+    while(!q.empty())
+    {
+        ele temp = q.front();
+        q.pop();
+        for(int i=temp.st; i<=temp.en; i++)
+        {
+            if(in[i]==temp.ptr->key)pos=i;
+        }
+        if(temp.st<=pos-1)
+        {
+            node *lnode=newNode(level[ind++]);
+            (temp.ptr)->left=lnode;
+            q.push({lnode,temp.st,pos-1});
+        }
+        if(temp.en>=pos+1)
+        {
+            node *rnode=newNode(level[ind++]);
+            (temp.ptr)->right=rnode;
+            q.push({rnode,pos+1,temp.en});
+        }
+    }
+    return root;
+}
+void printInorder(Node* node)
+{
+    if (node == NULL)
+        return;
+    printInorder(node->left);
+    cout << node->key << " ";
+    printInorder(node->right);
+}
+int main()
+{
+    int in[]    = {4,2,5,1,6,3,7};
+    int level[] = {1,2,3,4,5,6,7};
+    int n = sizeof(in)/sizeof(in[0]);
+    Node *root = func(in, level,n);
+    cout << "Inorder traversal of the constructed tree is \n";
+    printInorder(root);
+    return 0;
+}
