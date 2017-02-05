@@ -1,0 +1,122 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+typedef struct Stack
+{
+node*qnode;
+struct Stack*next;
+}stack;
+
+stack*createstack(node*n)
+{
+	stack*q=(stack*)malloc(sizeof(stack));
+	q->qnode=n;
+	q->next=NULL;
+	return q;
+}
+
+
+node*pop(stack**headf)
+{
+if(*headf==NULL)
+exit(0);
+
+stack*q=*headf;
+node*temp=q->qnode;
+(*headf)=(*headf)->next;
+free(q);
+return temp;
+}
+
+void push(stack**headf,node*root)
+{
+	stack*q=createstack(root);
+	if(*headf==NULL)
+	{
+		q->next=*headf;
+		*headf=q;
+		return;
+	}
+	q->next=*headf;
+	*headf=q;;
+	
+}
+
+void swap(stack**a,stack**b)
+{
+	stack*temp;
+	temp=*a;
+	*a=*b;
+	*b=temp;
+}
+
+void zigzag(node*root)
+{
+	if(root==NULL)
+	return;
+	
+	stack*top1=NULL;
+	stack*top2=NULL;
+	push(&top1,root);
+	int lefttoright=1;
+	
+	while(top1!=NULL || top2!=NULL)
+	{
+		node*temp=pop(&top1);
+		printf("%d ",temp->data);
+		if(temp)
+		{
+		if(lefttoright)
+		{
+			if(temp->left)
+			push(&top2,temp->left);
+			if(temp->right)
+			push(&top2,temp->right);
+		}
+		else
+		{
+			if(temp->right)
+			push(&top2,temp->right);
+			if(temp->left)
+			push(&top2,temp->left);
+		}
+			
+		}
+		if(top1==NULL)
+		{
+			lefttoright=1-lefttoright;
+			swap(&top1,&top2);
+		}
+	}
+
+	
+}
+
+int main()
+{
+	node*root=NULL;
+	root=createnode(1);
+	root->left=createnode(2);
+	root->right=createnode(3);
+	root->left->left=createnode(4);;
+	root->left->right=createnode(5);
+	root->right->left=createnode(6);
+	root->right->right=createnode(7);
+	zigzag(root);
+	return 0;
+}
