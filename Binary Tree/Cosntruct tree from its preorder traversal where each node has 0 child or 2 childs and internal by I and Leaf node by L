@@ -1,0 +1,54 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	char data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(char d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+node*buildtree(char*A,int*i)
+{
+	node*n=createnode(A[*i]);
+	if(A==NULL)
+	{
+		free(n);
+		return NULL;
+	}
+	
+	if(A[*i]=='L')
+	return n;
+	
+	*i=*i+1;
+	n->left=buildtree(A,i);
+	*i=*i+1;
+	n->right=buildtree(A,i);
+	return n;
+}
+
+void preorder(node*root)
+{
+	if(root==NULL)
+	return;
+	printf("%c ",root->data);
+	preorder(root->left);
+	preorder(root->right);
+}
+
+int main()
+{
+	char pre[]="ILILL";
+	int i=0;
+	node*root=buildtree(pre,&i);
+	preorder(root);
+	return 0;
+}
