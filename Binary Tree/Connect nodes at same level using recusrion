@@ -1,0 +1,55 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+	struct Node*sibling;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	n->sibling=NULL;
+	return n;
+}
+
+void connectrec(node*root)
+{
+	if(root==NULL)
+	return;
+	
+	if(root->left)
+	root->left->sibling=root->right;
+	
+	if(root->right)
+	root->right->sibling=(root->sibling)?root->sibling->left:NULL;
+	
+	connectrec(root->left);
+	connectrec(root->right);
+}
+
+void connect(node*root)
+{
+	root->sibling=NULL;
+	connectrec(root);
+}
+
+int main()
+{
+	node*root=NULL;
+	root=createnode(1);
+	root->left=createnode(2);
+	root->right=createnode(3);
+	root->left->left=createnode(4);;
+	root->left->right=createnode(5);
+	root->right->left=createnode(6);
+	root->right->right=createnode(7);
+	connect(root);
+	return 0;
+	
+}
