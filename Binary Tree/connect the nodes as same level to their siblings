@@ -1,0 +1,66 @@
+#include<iostream>
+#include<stdlib.h>
+#include<queue>
+using namespace std;
+
+
+typedef struct Node
+{
+	char data;
+	struct Node*left;
+	struct Node*right;
+	struct Node*sibling;
+}node;
+
+node*createnode(char d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	n->sibling=NULL;
+	return n;
+}
+
+void connect(node*root)
+{
+	if(root==NULL)
+	return;
+	
+	queue<node*> q;
+	q.push(root);
+	q.push(NULL);
+	
+	while(!q.empty())
+	{
+		node*temp=q.front();
+		q.pop();
+		if(temp)
+		temp->sibling=q.front();
+		
+		if(temp==NULL && !q.empty())
+		q.push(NULL);
+		
+		if(temp)
+		{
+		if(temp->left)
+		q.push(temp->left);
+		if(temp->right)
+		q.push(temp->right);
+		}
+	}
+}
+
+int main()
+{
+	node*root=NULL;
+	root=createnode(1);
+	root->left=createnode(2);
+	root->right=createnode(3);
+	root->left->left=createnode(4);;
+	root->left->right=createnode(5);
+	root->right->left=createnode(6);
+	root->right->right=createnode(7);
+	connect(root);
+	printf("%d",root->left->left->sibling->sibling->data);
+	return 0;
+}
