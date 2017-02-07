@@ -1,0 +1,42 @@
+#include<iostream>
+#include<stdlib.h>
+#include<map>
+using namespace std;
+
+int calculated(int p[],int n)
+{
+	int maxd=-1,currentd=-1,j;
+	map<int,int>m;
+	map<int,int>::iterator it=m.begin();
+	for(int i=0;i<n;i++)
+	{
+		j=i;
+		currentd=0;
+		while(p[j]!=-1)
+		{
+			it=m.find(p[j]);
+			
+			if(it!=m.end())
+			{
+			currentd++;
+			currentd=currentd+it->second;
+			break;
+		}
+			currentd++;
+			j=p[j];
+		}
+		m.insert(pair<int,int>(i,currentd));
+		if(maxd<currentd)
+		maxd=currentd;
+	}
+	return maxd;
+}
+
+int main()
+{
+	int parent[]={-1,0,1,6,6,0,0,2,7};
+	int size=sizeof(parent)/sizeof(parent[0]);
+	int depth=calculated(parent,size);
+	printf("%d",depth);
+	return 0;
+}
