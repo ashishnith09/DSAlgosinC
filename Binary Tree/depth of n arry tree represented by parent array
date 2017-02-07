@@ -1,0 +1,58 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+
+int getrootheight(int parent[],int depth[],int n)
+{
+	for(int i=0;i<n;i++)
+	{
+		if(parent[i]==-1)
+		return depth[i];
+	}
+	
+}
+int calculateheight(int parent[],int n)
+{
+	int depth[n];
+	for(int i=0;i<n;i++)
+	depth[i]=1;
+	
+	for(int index=0;index<n;index++)
+	{
+		int parentindex=parent[index];
+		int childindex=index;
+		
+		while(1)
+		{
+			if(parentindex==-1)
+			break;
+			
+			
+			int parentdepth=depth[index];
+			int newdepth=depth[childindex]+1;
+			
+			if(parentdepth<=newdepth)
+			{
+				depth[parentindex]=newdepth;
+				
+				// we are going one level up in tree
+				childindex=parentindex;
+				parentindex=parent[parentindex];
+			}
+			else
+			break;
+				
+		}	
+	}
+	int result=getrootheight(parent,depth,n);
+	return result;
+}
+
+int main()
+{
+	int parent[]={-1,0,0,1,1,3,5};
+	int n=sizeof(parent)/sizeof(parent[0]);
+	int result= calculateheight(parent,n);
+	printf("%d",result);
+	return 0;
+}
