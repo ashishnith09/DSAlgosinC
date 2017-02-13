@@ -1,0 +1,91 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*firstchild;
+	struct Node*sibling;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->firstchild=n->sibling=NULL;
+	return n;
+}
+
+void preorder(node*root)
+{
+if(root==NULL)
+return;
+printf("%d ",root->data);
+
+preorder(root->firstchild);
+
+preorder(root->sibling);
+}
+
+node*search(node*root,int data)
+{
+	if(root==NULL)
+	return NULL;
+	
+	if(data==root->data)
+	return root;
+	
+	node*t=search(root->firstchild,data);
+	if(t==NULL)
+	t=search(root->sibling,data);
+	
+	return t;
+}
+
+node*createnary(node*root,int data[])
+{
+	//check if node already exists
+	node*newnode=search(root,data[0]);
+	
+	if(newnode==NULL)
+	{
+		newnode=createnode(data[0]);
+	}
+	
+	node*parent=newnode;
+	int j;
+	
+	for(j=0;j<data[1];j++)
+	{
+		if(j==0)
+		{
+			parent->firstchild=createnode(data[j+2]);
+			parent=parent->firstchild;
+		}
+		else
+		{
+			parent->sibling=createnode(data[j+2]);
+			parent=parent->sibling;
+		}
+	}
+	if(root==NULL)
+	root=newnode;
+	
+	return root;
+}
+
+int main()
+{
+	int row=3;
+	 //1st element in each row is node Value, 2nd - no of child, ,>=3rd....=>value of child
+	int data[3][5]={{1,3,2,3,4},{2,2,5,6},{3,3,8,9,10}};
+	int i,j;
+	
+	node*root=NULL;
+	for(int i=0;i<row;i++)
+	{
+		//preorder(root);
+		root=createnary(root,data[i]);
+	}
+	preorder(root);
+}
