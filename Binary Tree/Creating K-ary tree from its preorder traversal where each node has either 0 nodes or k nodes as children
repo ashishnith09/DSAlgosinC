@@ -1,0 +1,59 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node**child;
+}node;
+
+node*createnode(int d)
+{
+	node*newnode=(node*)malloc(sizeof(node));
+	newnode->data=d;
+	newnode->child=NULL;
+	return newnode;
+}
+	int ind=0;
+
+node*buildKary(int a[],int n,int k)
+{
+	if(n<=0)
+	return NULL;
+	
+	node*newnode=(node*)malloc(sizeof(node));
+	newnode->child=(node**)malloc(sizeof(node*)*k);
+	newnode->data=a[ind];
+	for(int i=0;i<k;i++)
+	{
+		if(ind+k*i<n)
+		{
+			ind++;
+			newnode->child[i]=buildKary(a,n,k);
+		}
+		else
+		newnode->child[i]=NULL;
+	}
+	return newnode;
+}
+
+void preorder(node*root)
+{
+	if(root==NULL)
+	return;
+	
+	printf("%d ",root->data);
+	preorder(root->child[0]);
+	preorder(root->child[1]);
+	preorder(root->child[2]);
+}
+
+int main()
+{
+	int a[]={1,2,5,6,7,3,4};
+	int n=sizeof(a)/sizeof(a[0]);
+	int k=3;
+	node*root=buildKary(a,n,k);
+	preorder(root);
+	return 0;
+}
