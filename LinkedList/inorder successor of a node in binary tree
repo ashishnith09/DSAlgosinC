@@ -1,0 +1,65 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+node*findrightsucc(node*root)
+{
+	while(root->left)
+	root=root->left;
+	
+	return root;
+}
+
+node*inordersucc(node*root,int key,node*parent)
+{
+	if(root==NULL)
+	return NULL;
+	
+	if(root->data==key)
+	{
+		if(root->right)
+		return findrightsucc(root->right);
+		else
+		return parent;
+	}
+	
+	node*left=inordersucc(root->left,key,root);
+	if(left)
+	return left;
+	
+	return inordersucc(root->right,key,parent);
+}
+
+node*inordersuccessor(node*root,int key)
+{
+	return inordersucc(root,key,NULL);
+}
+
+int main()
+{
+	node*root=NULL;
+	root=createnode(1);
+	root->left=createnode(2);
+	root->right=createnode(3);
+	root->left->left=createnode(4);;
+	root->left->right=createnode(5);
+	root->right->left=createnode(6);
+	root->right->right=createnode(7);
+	node*x=inordersuccessor(root,root->data);
+	printf("%d\n",x->data);
+	return 0;
+}
