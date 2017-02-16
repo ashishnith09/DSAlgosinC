@@ -1,0 +1,68 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=NULL;
+	n->right=NULL;
+	return n;
+}
+
+node*preordersucc(node*root,int val)
+{
+	if(root==NULL || (root->left==NULL && root->right==NULL))
+	return NULL;
+	
+	node*temp=root;
+	node*ancestor=NULL;
+	
+	while(temp!=NULL && temp->data!=val)
+	{
+		if(val<temp->data)
+		{
+			if(temp->right)
+			ancestor=temp->right;
+			
+			temp=temp->left;
+		}
+		else
+		temp=temp->right;	
+	}
+	
+	if(temp==NULL)
+	return NULL;
+	if(temp->left)
+	return temp->left;
+	if(temp->right)
+	return temp->right;
+	
+	if(ancestor)
+	return ancestor;
+}
+
+int main()
+{
+	node*root=NULL;
+	root=createnode(10);
+	root->left=createnode(7);
+	root->left->left=createnode(5);
+	root->left->right=createnode(9);
+	root->right=createnode(13);
+	root->right->right=createnode(17);
+	root->right->left=createnode(12);
+	node*x=preordersucc(root,5);
+	if(x)
+	printf("Preorder successor of 5 is %d",x->data);
+	else
+	printf("Val does not exist");
+	return 0;
+}
