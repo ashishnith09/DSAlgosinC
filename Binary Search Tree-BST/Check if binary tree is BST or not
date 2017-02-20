@@ -1,0 +1,89 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));;
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+int maxvalue(node*root)
+{
+	if(root==NULL)
+	return 0;
+	
+	node*temp=root;
+	while(root->right)
+	root=root->right;
+	
+	return root->data;
+}
+
+int minvalue(node*root)
+{
+	if(root==NULL)
+	return 0;
+	
+	node*temp=root;
+	while(root->left)
+	root=root->left;
+	
+	return root->data;
+}
+
+node*insert(node*root,int key)
+{
+	if(root==NULL)
+	return root;
+	
+	if(key<root->data)
+	root->left=insert(root->left,key);
+	else if(key>root->data)
+	root->right=insert(root->right,key);
+	
+	return root;
+}
+
+int Isbst(node*root)
+{
+	if(root==NULL)
+	return 1;
+	
+	if(root->left!=NULL && maxvalue(root->left)>root->data)
+	return 0;
+	
+	if(root->right!=NULL && minvalue(root->right)<root->data)
+	return 0;
+	
+	if(!Isbst(root->left)||!Isbst(root->right))
+	return 0;
+	
+	return 1;
+	
+}
+
+int main()
+{
+	node*root=NULL;
+	root=insert(root,50);
+    insert(root,30);
+    insert(root,20);
+    insert(root,40);
+    insert(root,70);
+    insert(root,60);
+    insert(root,80);
+    if(Isbst(root))
+    printf("Binary tree is BST\n");
+    else
+    printf("Not BST");
+	return 0;
+}
