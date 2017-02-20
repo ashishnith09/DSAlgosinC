@@ -1,0 +1,117 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+void inorder(node*root)
+{
+	if(root==NULL)
+	return;
+	inorder(root->left);
+	printf("%d ",root->data);
+	inorder(root->right);
+}
+
+node* insert(node*root,int d)
+{
+	if(root==NULL)
+	return createnode(d);
+	
+	if(d<root->data)
+	root->left=insert(root->left,d);
+	else if(d>root->data)
+	root->right=insert(root->right,d);
+
+	return root;
+}
+
+node*search(node*root,int d)
+{
+	if(root==NULL || root->data==d)
+	return root;
+	
+	if(root->data>d)
+	return search(root->left,d);
+	else if(root->data<d)
+	search(root->right,d);
+}
+node*getmin(node*root)
+{
+	if(root==NULL)
+	return NULL;
+	
+	while(root->left)
+	root=root->left;
+	
+	return root;
+}
+
+node* deletenode(node*root,int d)
+{
+	if(root==NULL)
+	return root;
+	
+	if(d<root->data)
+	root->left=deletenode(root->left,d);
+	else if(d>root->data)
+	root->right=deletenode(root->right,d);
+	else
+	{
+		if(root->left==NULL)
+		{
+			node*temp=root->right;
+			free(root);
+			return temp;
+		}
+		else if(root->right==NULL)
+		{
+			node*temp=root->left;
+			free(root);
+			return temp;
+		}
+		
+		node*temp=getmin(root->right);
+		
+		root->data=temp->data;
+		root->right=deletenode(root->right,temp->data);
+	}
+	return root;
+}
+
+int main()
+{
+	node*root=NULL;
+	root=insert(root,50);
+    insert(root,30);
+    insert(root,20);
+    insert(root,40);
+    insert(root,70);
+    insert(root,60);
+    insert(root,80);
+    inorder(root);
+    
+    node*s=search(root,90);
+    if(s)
+    printf("\nNode found is %d\n ",s->data);
+    else
+    printf("\nNode not present\n");
+    
+    deletenode(root,30);
+    
+    inorder(root);
+    
+    return 0;
+}
