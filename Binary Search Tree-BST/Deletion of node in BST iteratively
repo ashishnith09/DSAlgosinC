@@ -1,0 +1,208 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->left=n->right=NULL;
+	n->data=d;
+	return n;
+}
+
+node*insert(node*root,int d)
+{
+	if(root==NULL)
+	return createnode(d);
+	
+	if(root->data>d)
+	root->left=insert(root->left,d);
+	else if(root->data<d)
+	root->right=insert(root->right,d);
+	
+	return root;
+}
+
+void inorder(node*root)
+{
+	if(root==NULL)
+	return;
+	inorder(root->left);
+	printf("%d ",root->data);
+	inorder(root->right);
+}
+
+node*getmin(node*root)
+{
+	if(root==NULL)
+	return root;
+	
+	node*temp=root->right;
+	while(temp->left)
+	temp=temp->left;
+	
+	return temp;
+}
+
+node*deletenode(node*root,int d)
+{
+	if(root==NULL)
+	{
+		printf("BST is empty");
+		exit(0);
+	}
+	node*temp;
+	node*parent=root;
+	node*rootX=root;
+
+	while(root!=NULL)
+	{
+		if(root->data>d)
+		{
+			parent=root;
+			root=root->left;
+		}
+		else if(root->data<d)
+		{
+			parent=root;
+			root=root->right;
+		}
+		else
+		{
+			if(parent->left==root)
+			{
+				if(root->left==NULL)
+				{
+				temp=root->right;
+				free(root);
+				parent->left=temp;
+                                break;
+				}
+				else if(root->right==NULL)
+				{
+					temp=root->left;
+					free(root);
+					parent->left=temp;
+                                break;
+				}
+				else
+				{
+				//get min in right
+                                 temp=root->right;
+                                 parent=root;
+                                int isleft=0;
+				 while(temp->left!=NULL)             
+				 {
+				 	parent=temp;
+				 	temp=temp->left;
+                                        isleft=1;
+				 }
+                                   
+				 root->data=temp->data;
+                                        if(isleft==0)
+					parent->right=temp->right;
+                                        else
+                                        parent->left=temp->right;
+					free(temp);
+                                        break;
+				}
+			}
+			else if(parent->right==root)
+			{
+				if(root->left==NULL)
+				{
+				temp=root->right;
+				free(root);
+				parent->right=temp;
+                                break;	
+				}
+				else if(root->right==NULL)
+				{
+					temp=root->left;
+					free(root);
+					parent->right=temp;
+                                        break;
+				}
+                                else
+				{
+				//get min in right
+                                 temp=root->right;
+                                  int isleft=0;
+                                  parent=root;
+				 while(temp->left!=NULL)             
+				 {
+				 	parent=temp;
+				 	temp=temp->left;
+                                        isleft=1;
+				 }
+                                   
+				 root->data=temp->data;
+                                        if(isleft==0)
+					parent->right=temp->right;
+                                        else
+                                        parent->left=temp->right;
+					free(temp);
+                                        break;
+				}
+			}
+			else
+			{
+				//get minimum right side
+				temp=root->right;
+                parent=root;
+                while(temp->left!=NULL)             
+				 {
+				 	parent=temp;
+				 	temp=temp->left;
+				 }
+				 root->data=temp->data;
+					parent->left=temp->right;
+					free(temp);
+                    break;
+                
+			}
+		}
+	}
+    return rootX;	
+}
+
+void preorder(node*root)
+{
+if(root==NULL)
+return;
+printf("%d ",root->data);
+preorder(root->left);
+preorder(root->right);
+}
+
+
+int main()
+{
+	node*root=NULL;
+	root=insert(root,50);
+    insert(root,30);
+    insert(root,20);
+    insert(root,40);
+    insert(root,70);
+    insert(root,60);
+    insert(root,80);
+    insert(root,10);
+    insert(root,25);
+    insert(root,35);
+    insert(root,45);
+    insert(root,55);
+    insert(root,85);
+    insert(root,75);
+
+    inorder(root);
+    printf("\n\n");
+    root=deletenode(root,75);
+    inorder(root);
+	return 0;
+}
