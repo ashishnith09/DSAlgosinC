@@ -1,0 +1,43 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node{
+       int data;
+       struct node* left;
+       struct node* right;
+};
+struct node* SortedArraytoBalancedBST(int* arr,int start,int end,struct node* root)
+{
+    if(start > end)
+      return 0;
+    int mid=(start+end)/2;
+    
+    struct node* temp=(struct node*)malloc(sizeof(struct node));
+    temp->data=arr[mid];
+    temp->left=temp->right=NULL;
+    root=temp;
+    
+    root->left = SortedArraytoBalancedBST(arr,start,mid-1,root->left);
+    root->right = SortedArraytoBalancedBST(arr,mid+1,end,root->right);
+    return root;
+}
+Inorder(struct node* root)
+{
+  if(root==NULL)
+    return 0;
+  
+  Inorder(root->left);
+  printf("%d ",root->data);
+  Inorder(root->right);
+  
+}
+int main(void)
+{
+    struct node* root=NULL;
+    int arr[]={10,20,30,40,50,60,65};
+    int n= sizeof(arr)/sizeof(arr[0]);
+    root=SortedArraytoBalancedBST(arr,0,n-1,root);
+    Inorder(root);
+ 
+    return 0;
+}
