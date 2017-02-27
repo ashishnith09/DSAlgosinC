@@ -1,0 +1,107 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*next;
+	struct Node*prev;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->next=n->prev=NULL;
+	return n;
+}
+
+void push(node**headf,int d)
+{
+	node*n=createnode(d);
+	
+	n->next=*headf;
+	if(*headf)
+	(*headf)->prev=n;
+	
+	*headf=n;
+}
+
+void printlist(node*headf)
+{
+	while(headf->next)
+	{
+		printf("%d->",headf->data);
+		headf=headf->next;
+	}
+	printf("%d",headf->data);
+	printf("\n");
+	
+	while(headf)
+	{
+		printf("<-%d",headf->data);
+		headf=headf->prev;
+	}
+}
+
+node*findmiddle(node*head)
+{
+	if(head==NULL)
+	return head;
+	node*temp=head;
+	while(head && head->next)
+	{
+		temp=temp->next;
+		head=head->next->next;
+	}
+	
+	return temp;
+}
+
+node*dlltobst(node*headf)
+{
+	if(!headf || !headf->next)
+	return headf;
+	
+	//find the middle of dll
+	node*temp=findmiddle(headf);
+	if(temp->prev)
+	temp->prev->next=NULL;
+	
+	if(temp->next)
+	temp->next->prev=NULL;
+	
+	temp->prev=dlltobst(headf);
+	temp->next=dlltobst(temp->next);
+	
+	return temp;
+}
+
+void inorder(node*root)
+{
+	if(root==NULL)
+	return;
+	
+	inorder(root->prev);
+	printf("%d ",root->data);
+	inorder(root->next);
+	
+}
+
+
+int main()
+{
+	node*headf=NULL;
+	push(&headf,10);
+	push(&headf,23);
+	push(&headf,29);
+	push(&headf,30);
+	push(&headf,45);
+	push(&headf,50);
+	//convert it to bst
+	printlist(headf);
+	node*head=dlltobst(headf);
+	printf("\n");
+	inorder(head);
+	return 0;
+}
