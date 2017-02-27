@@ -1,0 +1,76 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+void preorder(node*root)
+{
+	if(root==NULL)
+	return;
+	printf("%d ",root->data);
+	preorder(root->left);
+	preorder(root->right);
+}
+
+node*insert(node*root,int d)
+{
+	if(root==NULL)
+	return createnode(d);
+	if(root->data>d)
+	root->left=insert(root->left,d);
+	else if(root->data<d)
+	root->right=insert(root->right,d);
+	
+	return root;
+}
+
+node*commonancestor(node*root,node*first,node*second)
+{
+	if(root==NULL)
+	{
+		printf("BST is empty");
+		exit(0);
+	}
+	if(root->data>first->data && root->data>second->data)
+	root=root->left;
+	else if(root->data<first->data && root->data<second->data)
+	root=root->right;
+	else if((root->data>first->data && root->data<second->data) || (root->data<first->data && root->data>second->data))
+	return root;
+}
+
+int main()
+{
+	node*root=NULL;
+	root=insert(root,50);
+    insert(root,30);
+    insert(root,20);
+    insert(root,40);
+    insert(root,70);
+    insert(root,60);
+    insert(root,80);
+    insert(root,10);
+    insert(root,25);
+    insert(root,35);
+    insert(root,45);
+    insert(root,55);
+    insert(root,85);
+    insert(root,75);
+    //finding lowest common ancestor of 2 nodes
+    node*n=commonancestor(root,root->left->left,root->left->right->right);
+    printf("Lowest common ancestor of node %d and node %d is = %d\n",root->left->left->data,root->left->right->right->data,n->data);
+	return 0;
+}
