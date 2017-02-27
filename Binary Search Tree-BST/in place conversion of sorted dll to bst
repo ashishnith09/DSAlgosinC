@@ -1,0 +1,88 @@
+#include<iostream>
+using namespace std;
+
+typedef class Node
+{
+	public:
+	int data;
+	class Node*next,*prev;
+	Node(int d)
+	{
+	this->data=d;
+	this->next=this->prev=NULL;	
+	}
+}node;
+
+void addnode(node**headf,int d)
+{
+	if(*headf==NULL)
+	{
+	node*n=new node(d);
+	*headf=n;
+}
+	node*n=new node(d);
+	n->next=*headf;
+	(*headf)->prev=n;
+	*headf=n;
+}
+
+void printlist(node*head)
+{
+	while(head)
+	{
+		printf("%d->",head->data);
+		head=head->next;
+	}
+}
+
+int countnodes(node*head)
+{
+	int c=0;
+	while(head)
+	{
+		c++;
+		head=head->next;
+	}
+	
+	return c;
+}
+
+node*sortedlistTobstrecur(node**headf,int n)
+{
+	if(n<=0)
+	return NULL;
+	
+	node*left=sortedlistTobstrecur(headf,n/2);
+	node*root=*headf;
+	
+	root->prev=left;
+	*headf=(*headf)->next;
+	root->next=sortedlistTobstrecur(headf,n-n/2-1);
+	
+	return root;
+}
+
+node*sortedlistTobst(node*headf)
+{
+	int n=countnodes(headf);
+	
+	return sortedlistTobstrecur(&headf,n);
+}
+
+int main()
+{
+	node*headf=NULL;
+	addnode(&headf,10);
+	addnode(&headf,9);
+	addnode(&headf,8);
+	addnode(&headf,7);
+	addnode(&headf,6);
+	addnode(&headf,5);
+	addnode(&headf,4);
+	
+	printlist(headf);
+	
+	node*root=sortedlistTobst(headf);
+	return 0;
+}
+
