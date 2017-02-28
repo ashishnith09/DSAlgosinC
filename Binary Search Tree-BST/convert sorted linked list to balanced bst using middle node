@@ -1,0 +1,110 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct LNode
+{
+	int data;
+	struct LNode*next;
+}lnode;
+
+typedef struct TNode
+{
+	int data;
+	struct TNode*left;
+	struct TNode*right;
+}tnode;
+
+lnode*lcreatenode(int d)
+{
+	lnode*n=(lnode*)malloc(sizeof(lnode));
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+tnode*tcreatenode(int d)
+{
+tnode*n=(tnode*)malloc(sizeof(tnode));
+n->data=d;
+n->left=n->right=NULL;
+return n;
+}
+
+void push(lnode**headf,int d)
+{
+	lnode*n=lcreatenode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+void printlist(lnode*head)
+{
+	while(head)
+	{
+		printf("%d->",head->data);
+		head=head->next;
+	}
+}
+
+lnode*findmiddle(lnode*head)
+{
+	lnode*temp=head;
+	while(head && head->next)
+	{
+		temp=temp->next;
+		head=head->next->next;
+	}
+	return temp;
+}
+
+tnode*sortedlltobst(lnode*head)
+{
+	lnode*temp,*p,*q;
+	if(!head)
+	return NULL;
+	if(!head->next)
+	return tcreatenode(head->data);
+	
+	temp=findmiddle(head);
+	tnode*root=tcreatenode(temp->data);
+	
+	p=head;
+	while(p->next!=temp)
+	p=p->next;
+	
+	p->next=NULL;
+	q=temp->next;
+
+	root->left=sortedlltobst(head);
+	root->right=sortedlltobst(q);
+	
+	return root;
+}
+
+void preorder(tnode*root)
+{
+	if(root==NULL)
+	return;
+	printf("%d ",root->data);
+	preorder(root->left);
+	preorder(root->right);
+}
+
+int main()
+{
+	lnode*head=NULL;
+	push(&head,10);
+	push(&head,8);
+	push(&head,7);
+	push(&head,5);
+	push(&head,3);
+	push(&head,2);
+	push(&head,1);
+	
+	printlist(head);
+	//convert to balanced bst;
+	printf("\n");
+	tnode*root=sortedlltobst(head);
+	preorder(root);
+	return 0;
+}
