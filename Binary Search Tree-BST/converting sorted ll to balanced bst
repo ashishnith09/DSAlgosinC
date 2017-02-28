@@ -1,0 +1,103 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct LNode
+{
+	int data;
+	struct LNode*next;
+}lnode;
+
+typedef struct TNode
+{
+	int data;
+	struct TNode*left;
+	struct TNode*right;
+}tnode;
+
+lnode*lcreatenode(int d)
+{
+	lnode*n=(lnode*)malloc(sizeof(lnode));
+	n->data=d;
+	n->next=NULL;
+	return n;
+}
+
+tnode*tcreatenode(int d)
+{
+	tnode*n=(tnode*)malloc(sizeof(tnode));
+	n->data=d;
+	n->right=n->left=NULL;
+	return n;
+}
+
+void printlist(lnode*head)
+{
+	while(head)
+	{
+		printf("%d->",head->data);
+		head=head->next;
+	}
+}
+
+int countnodes(lnode*head)
+{
+	if(head==NULL)
+	return 0;
+	int p=0;
+	while(head)
+	{
+		p++;
+		head=head->next;
+	}
+	return p;
+}
+
+tnode*lltobst(lnode**headf,int n)
+{
+	if(n<=0)
+	return NULL;
+	
+	tnode*left=lltobst(headf,n/2);
+	tnode*root=tcreatenode((*headf)->data);
+	root->left=left;
+	
+	(*headf)=(*headf)->next;
+	root->right=lltobst(headf,n-n/2-1);
+	
+	return root;
+}
+
+void push(lnode**headf,int d)
+{
+	lnode*n=lcreatenode(d);
+	n->next=*headf;
+	*headf=n;
+}
+
+void inorder(tnode*root)
+{
+	if(root==NULL)
+	return;
+	inorder(root->left);
+	printf("%d ",root->data);
+	inorder(root->right);
+}
+
+int main()
+{
+	lnode*head=NULL;
+	push(&head,10);
+	push(&head,9);
+	push(&head,8);
+	push(&head,6);
+	push(&head,3);
+	push(&head,2);
+	push(&head,1);
+	
+	printlist(head);
+	int n=countnodes(head);
+	tnode*root=lltobst(&head,n);
+	printf("\n");
+	inorder(root);
+	return 0;
+}
