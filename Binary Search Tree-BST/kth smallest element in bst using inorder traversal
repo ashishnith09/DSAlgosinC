@@ -1,0 +1,68 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+node*insert(node*root,int d)
+{
+	if(root==NULL)
+	return createnode(d);
+	
+	if(root->data>d)
+	root->left=insert(root->left,d);
+	else if(root->data<d)
+	root->right=insert(root->right,d);
+	
+	return root;
+}
+
+void inorder(node*root,int k,int*c,node**headf)
+{
+	if(root==NULL)
+	return;
+	
+	inorder(root->left,k,c,headf);
+	(*c)++;
+	if(*c==k)
+	{
+		*headf=root;
+		return;
+	}
+	
+	inorder(root->right,k,c,headf);
+}
+
+int main()
+{
+	node*root=NULL;
+	root=insert(root,50);
+    insert(root,30);
+    insert(root,20);
+    insert(root,40);
+    insert(root,70);
+    insert(root,60);
+    insert(root,80);
+    
+    int k=2;
+    int count=0;
+    node*headf=NULL;
+    inorder(root,k,&count,&headf);
+    if(headf)
+    printf(" kth node is %d",headf->data);
+    else
+    printf("Node does not exists");
+	return 0;
+}
