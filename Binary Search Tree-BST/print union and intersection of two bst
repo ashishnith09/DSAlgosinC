@@ -1,0 +1,141 @@
+  #include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+void inorder(node*root)
+{
+	if(root==NULL)
+	return;
+	inorder(root->left);
+	printf("%d ",root->data);
+	inorder(root->right);
+}
+
+node* insert(node*root,int d)
+{
+	if(root==NULL)
+	return createnode(d);
+	
+	if(d<root->data)
+	root->left=insert(root->left,d);
+	else if(d>root->data)
+	root->right=insert(root->right,d);
+
+	return root;
+}
+
+void storeinorder(node*root,int arr[],int *index)
+{
+	if(root==NULL)
+	return;
+	
+	storeinorder(root->left,arr,index);
+	arr[*index]=root->data;
+	(*index)++;
+	storeinorder(root->right,arr,index);
+}
+
+void intersection(int a[],int b[],int m,int n)
+{
+	int i=0,j=0;
+	while(i<m && j<n)
+	{
+		if(a[i]<b[j])
+		{
+			i++;
+		}
+		else if(a[i]>b[j])
+		{
+			j++;
+		}
+		else if(a[i]==b[j])
+		{
+			printf("%d ",a[i]);
+			i++;
+			j++;
+		}
+	}	
+}
+
+unionofboth(int a[],int b[],int m,int n)
+{
+	int i=0,j=0;
+	while(i<m && j<n)
+	{
+		if(a[i]<b[j])
+		{
+		printf("%d ",a[i]);
+			i++;
+		}
+		else if(a[i]>b[j])
+		{
+			printf("%d ",b[i]);
+			j++;
+		}
+		else
+		{
+		printf("%d ",a[i]);
+		i++;
+		j++;
+		}
+	}
+	
+	while(i<m)
+	{
+		printf("%d ",a[i]);
+		i++;
+	}
+	while(j<n)
+	{
+		printf("%d ",b[j]);
+		j++;
+	}
+}
+
+void unionintersection(node*root1,node*root2,int m,int n)
+{
+	int *arr1=(int*)malloc(sizeof(int)*m);
+	int i=0;
+	storeinorder(root1,arr1,&i);
+	
+	int *arr2=(int*)malloc(sizeof(int)*n);
+	int j=0;
+	storeinorder(root2,arr2,&j);
+	printf("intersection of both BST is\n");
+	intersection(arr1,arr2,m,n);
+	printf("\nUnion of both bst is\n");
+	unionofboth(arr1,arr2,m,n);
+}
+
+int main()
+{
+	node*root1=NULL;
+	root1=insert(root1,4);
+	insert(root1,7);
+	insert(root1,9);
+	insert(root1,2);
+	
+	node*root2=NULL;
+	root2=insert(root2,4);
+	insert(root2,7);
+	insert(root2,8);
+	insert(root2,9);
+	
+	unionintersection(root1,root2,4,3);
+	
+	return 0;
+}
