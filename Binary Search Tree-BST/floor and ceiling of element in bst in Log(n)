@@ -1,0 +1,103 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+void inorder(node*root)
+{
+	if(root==NULL)
+	return;
+	inorder(root->left);
+	printf("%d ",root->data);
+	inorder(root->right);
+}
+
+node* insert(node*root,int d)
+{
+	if(root==NULL)
+	return createnode(d);
+	
+	if(d<root->data)
+	root->left=insert(root->left,d);
+	else if(d>root->data)
+	root->right=insert(root->right,d);
+
+	return root;
+}
+
+node*floor(node*root,node*prev,int d)
+{
+	if(root==NULL)
+	return prev;
+	
+	if(root->data==d)
+	return root;
+	
+	if(root->data<d)
+	prev=root;
+	
+	if(root->data>d)
+	return floor(root->left,prev,d);
+	else if(root->data<d)
+	return floor(root->right,prev,d);
+}
+
+node*ceil(node*root,node*prev,int d)
+{
+	if(root==NULL)
+	return prev;
+	
+	if(root->data==d)
+	return root;
+	
+	if(root->data>d)
+	prev=root;
+	
+	if(d<root->data)
+	return ceil(root->left,prev,d);
+	else if(d>root->data)
+	return ceil(root->right,prev,d);
+}
+
+
+int main()
+{
+	node*root=NULL;
+	root=insert(root,50);
+    insert(root,30);
+    insert(root,20);
+    insert(root,40);
+    insert(root,70);
+    insert(root,60);
+    insert(root,80);
+    int k=100;
+    
+    node*prev=NULL;
+    node*f=floor(root,prev,k);
+    if(f)
+    printf("floor of %d is = %d\n",k,f->data);
+    else
+    printf("\nFloor does not exists");
+    
+    prev=NULL;
+    
+    node*c=ceil(root,prev,k);
+    if(c)
+ 	 printf("\nceiling of %d is = %d\n",k,c->data);
+    else
+    printf("\nceiling does not exists");
+	return 0;
+}
