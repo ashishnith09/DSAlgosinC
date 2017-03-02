@@ -1,0 +1,119 @@
+#include<iostream>
+#include<stdlib.h>
+#include<set>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+void inorder(node*root)
+{
+	if(root==NULL)
+	return;
+	inorder(root->left);
+	printf("%d ",root->data);
+	inorder(root->right);
+}
+
+node* insert(node*root,int d)
+{
+	if(root==NULL)
+	return createnode(d);
+	
+	if(d<root->data)
+	root->left=insert(root->left,d);
+	else if(d>root->data)
+	root->right=insert(root->right,d);
+
+	return root;
+}
+
+void storeinorder(node*root,set<int> *st)
+{
+	if(root==NULL)
+	return;
+	
+	storeinorder(root->left,st);
+	(*st).insert(root->data);
+	storeinorder(root->right,st);
+}
+
+void intersection(node*root,set<int> *st)
+{
+		if(root==NULL)
+		return;
+		
+		if((*st).count(root->data))
+		{
+			printf("%d ",root->data);
+		}
+		intersection(root->left,st);
+		intersection(root->right,st);
+}
+
+void unionelements(node*root,set<int> *st)
+{
+	if(root==NULL)
+	return;
+	
+	if((*st).count(root->data))
+	{
+		printf("%d ",root->data);
+	}
+	else
+	{
+		printf("%d ",root->data);
+	}
+	unionelements(root->left,st);
+	unionelements(root->right,st);
+	
+}
+
+void unionintersection(node*root1,node*root2,int m,int n)
+{
+	set<int> st;
+	//print content of map
+	set<int> ::iterator it;
+	storeinorder(root1,&st);
+	
+	for(it=st.begin();it!=st.end();++it)
+	cout<<*it<<" ";
+	
+	//intersection
+	printf("Intersection is \n");
+	intersection(root2,&st);
+	printf("\nUnion is \n");
+	unionelements(root2,&st);
+	
+}
+
+int main()
+{
+	node*root1=NULL;
+	root1=insert(root1,4);
+	insert(root1,7);
+	insert(root1,9);
+	insert(root1,2);
+	
+	node*root2=NULL;
+	root2=insert(root2,4);
+	insert(root2,7);
+	insert(root2,8);
+	insert(root2,9);
+	
+	unionintersection(root1,root2,4,3);
+	
+	return 0;
+}
