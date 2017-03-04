@@ -47,10 +47,22 @@ for a & b to represent same bts, occurance of indexes must be similar
 
 2nd Solution:
 Algorithm/Insights
-
-The idea is to look for the element in both given arrays which would be used to construct the same part of the trees.
-For example, given two arrays {3,5,4,6,1,0,2} and {3,1,5,2,4,6,0}; in both of these arrays element 3 would be used to construct the root of the tree. Now in both of these arrays, if we search for an element which would be used to construct the root of the right sub-tree of node '3' then that element would turn out to be 5. The reason for this is that both of these arrays, element 5 is the first element found which is greater than 3. Similarly, if we search for an element which would be used to construct the root of the left sub-tree of node '3', that element would be 1. This is because element 1 is the first element found in both of these arrays which is less than 3. Until this point we know that for both of these BSTs - root 3, and it's left and right sub-tree roots(node 1 and node 5 respectively) are same. Moving ahead, to construct root of the left sub-tree of node '5', we look for the first element which is less than 5 but greater than 3. The first such element found in both of the arrays is 4. Similarly, to construct the root of the right sub-tree of node '1', we look for the first element in array which is greater than 1 but less than 3. Using this ides we check for equality of elements in two arrays corresponding to identical parts of the BSTs and we check this for all possible parts of BSTs using recursion.  
+/*
+Tthe idea is to look for the element in both given arrays which would be used to construct the same part of the trees.
+For example, given two arrays {3,5,4,6,1,0,2} and {3,1,5,2,4,6,0}; 
+in both of these arrays element 3 would be used to construct the root of the tree. Now in both of these arrays, 
+if we search for an element which would be used to construct the root of the right sub-tree of node '3' then that element would turn out to be 5. 
+The reason for this is that both of these arrays, element 5 is the first element found which is greater than 3. Similarly, 
+if we search for an element which would be used to construct the root of the left sub-tree of node '3', 
+that element would be 1. This is because element 1 is the first element found in both of these arrays which is less than 3. 
+Until this point we know that for both of these BSTs - root 3, and it's left and right sub-tree roots(node 1 and node 5 respectively) are same. 
+Moving ahead, to construct root of the left sub-tree of node '5', we look for the first element which is less than 5 but greater than 3.
+ The first such element found in both of the arrays is 4. Similarly, to construct the root of the right sub-tree of node '1', 
+ we look for the first element in array which is greater than 1 but less than 3. 
+ Using this ides we check for equality of elements in two arrays corresponding to identical parts of the BSTs and
+  we check this for all possible parts of BSTs using recursion.  
 
 Please check function checkIfSameBSTs(int[] arrayForTree1, int[] arrayForTree2, int index1, int index2, int min, int max) which has more comments to help understand the implementation details.
 
-Time complexity of this algorithm is O(n^2) in worst case.
+
+*/
