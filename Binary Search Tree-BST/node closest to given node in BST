@@ -1,0 +1,81 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<iostream>
+#include<math.h>
+#include<limits.h>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->left=n->right=NULL;
+	n->data=d;
+	return n;
+}
+
+void inorder(node*root)
+{
+	if(root==NULL)
+	return;
+	inorder(root->left);
+	printf("%d ",root->data);
+	inorder(root->right);
+}
+
+node* insert(node*root,int d)
+{
+	if(root==NULL)
+	return createnode(d);
+	
+	if(d<root->data)
+	root->left=insert(root->left,d);
+	else if(d>root->data)
+	root->right=insert(root->right,d);
+
+	return root;
+}
+
+void find(node*root,int d,node**parent,int *diff)
+{
+	if(root==NULL)
+	return;
+        int x=abs(root->data-d);
+        if(*diff>x)
+{
+           *diff=x;
+*parent=root;
+}
+	find(root->left,d,parent,diff);
+        find(root->right,d,parent,diff);
+        
+}
+
+int main()
+{
+	node*root=NULL;
+	root=insert(root,50);
+    insert(root,30);
+    insert(root,20);
+    insert(root,40);
+    insert(root,70);
+    insert(root,60);
+    insert(root,80);
+    inorder(root);
+	
+	int k=15;
+	node*x=NULL;
+int diff=INT_MAX;
+	find(root,k,&x,&diff);
+	if(x)
+	printf("\nClosest node is = %d ",x->data);
+	else
+	printf("\nNode does not exits");
+	return 0;
+}
