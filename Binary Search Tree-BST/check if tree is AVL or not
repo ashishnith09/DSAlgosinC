@@ -1,0 +1,80 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->left=n->right=NULL;
+	n->data=d;
+	return n;
+}
+
+void inorder(node*root)
+{
+	if(root==NULL)
+	return;
+	inorder(root->left);
+	printf("%d ",root->data);
+	inorder(root->right);
+}
+
+node* insert(node*root,int d)
+{
+	if(root==NULL)
+	return createnode(d);
+	
+	if(d<root->data)
+	root->left=insert(root->left,d);
+	else if(d>root->data)
+	root->right=insert(root->right,d);
+
+	return root;
+}
+
+int Isavl(node*root,int *height)
+{
+	int l=0,r=0;
+	int lh=0,rh=0;
+	
+	if(root==NULL)
+	{
+		*height=0;
+		return 1;
+	}
+	l=Isavl(root->left,&lh);
+	r=Isavl(root->right,&rh);
+	
+	*height=(lh>rh?lh:rh)+1;
+	
+	if((lh-rh)>=2 ||(rh-lh)>=2)
+	return 0;
+	else
+	return l&r;
+}
+
+int main()
+{
+	node*root=NULL;
+	root=insert(root,50);
+    insert(root,30);
+    insert(root,20);
+    insert(root,40);
+    //insert(root,10);
+    insert(root,80);
+    
+    int height=0;
+    if(Isavl(root,&height))
+    printf("Tree is AVL");
+    else
+    printf("Tree is not AVL");
+	return 0;
+}
