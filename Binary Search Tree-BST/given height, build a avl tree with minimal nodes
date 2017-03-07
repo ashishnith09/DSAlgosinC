@@ -1,0 +1,54 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<iostream>
+using namespace std;
+int count=0;
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+	int height;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->left=n->right=NULL;
+	n->data=d;
+	return n;
+}
+
+void inorder(node*root)
+{
+	if(root==NULL)
+	return;
+	
+	inorder(root->left);
+	printf("%d ",root->data);
+	inorder(root->right);
+}
+
+node*buildavl(int h)
+{
+	if(h<=0)
+	return NULL;
+	
+	node*n=(node*)malloc(sizeof(node));
+	n->left=buildavl(h-1);
+	n->data=count++;
+	n->right=buildavl(h-2);
+	
+	n->height=h;
+	return n;
+}
+
+int main()
+{
+	int h=2;
+	node*root=buildavl(h);
+	inorder(root);
+	
+	return 0;
+}
