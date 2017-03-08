@@ -1,0 +1,86 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<iostream>
+using namespace std;
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+}node;
+
+node*createnode(int d)
+{
+	node*n=new node;
+	n->left=n->right=NULL;
+	n->data=d;
+	return n;
+}
+
+void inorder(node*root)
+{
+	if(root==NULL)
+	return;
+	inorder(root->left);
+	printf("%d ",root->data);
+	inorder(root->right);
+}
+
+node* insert(node*root,int d)
+{
+	if(root==NULL)
+	return createnode(d);
+	
+	if(d<root->data)
+	root->left=insert(root->left,d);
+	else if(d>root->data)
+	root->right=insert(root->right,d);
+
+	return root;
+}
+
+node*prunetree(node*root,int k1,int k2)
+{
+	if(root==NULL)
+	return root;
+	
+	node*temp;
+	root->left=prunetree(root->left,k1,k2);
+	root->right=prunetree(root->right,k1,k2);
+	
+	if(k1<=root->data && root->data<=k2)
+	return root;
+	
+	if(root->data<k1)
+	{
+	temp=root->right;
+	free(root);
+	return temp;
+	}
+	else if(root->data>k2)
+	{
+	temp=root->left;
+	free(root);
+	return temp;
+	}
+	return root;
+}
+
+int main()
+{
+	node*root=NULL;
+	root=insert(root,50);
+    insert(root,30);
+    insert(root,20);
+    insert(root,40);
+    insert(root,70);
+    insert(root,60);
+    insert(root,80);
+    inorder(root);
+    
+    root=prunetree(root,40,60);
+    printf("\nInorder traversal after pruning tree\n");
+    inorder(root);
+	return 0;
+}
