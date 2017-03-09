@@ -1,0 +1,98 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Node
+{
+	int data;
+	struct Node*left;
+	struct Node*right;
+	struct Node*next;
+}node;
+
+node*createnode(int d)
+{
+	node*n=(node*)malloc(sizeof(node));
+	n->data=d;
+	n->left=n->right=NULL;
+	return n;
+}
+
+void preorder(node*root)
+{
+	if(root==NULL)
+	return;
+	printf("%d ",root->data);
+	preorder(root->left);
+	preorder(root->right);
+}
+
+node*getnext(node*root)
+{
+	node*temp=root->next;
+	
+	while(temp)
+	{
+		if(temp->left)
+		return temp->left;
+		else if(temp->right)
+		return temp->right;
+		
+		temp=temp->next;
+	}
+	return temp;
+}
+
+void linknext(node*root)
+{
+	if(root==NULL)
+	return;
+	node*p=root;
+	if(p->next)
+	linknext(p->next);
+	
+	if(p->left)
+	{
+		
+		if(p->right)
+		{
+			p->left->next=p->right;
+			p->right->next=getnext(p);
+		}
+		else
+		{
+			p->left->next=getnext(p);
+		}
+		linknext(p->left);
+	}
+	
+	else if(p->right)
+	{
+	p->right->next=getnext(p);
+	linknext(p->right);		
+	}
+	else
+	linknext(getnext(p));
+	
+}
+
+int main()
+{
+	node*root=NULL;
+	root=createnode(1);
+	root->left=createnode(2);
+	root->right=createnode(3);
+	root->left->left=createnode(4);
+	root->left->right=createnode(5);
+	root->left->left->left=createnode(8);
+	root->left->left->right=createnode(9);
+	root->right->left=createnode(6);
+	root->right->right=createnode(7);
+	root->right->right->left=createnode(10);
+	root->right->right->right=createnode(11);
+	preorder(root);
+	
+	root->next=NULL;
+	linknext(root);
+	printf("\n%d",root->left->next->left->next->left->data);
+	return 0;
+}
