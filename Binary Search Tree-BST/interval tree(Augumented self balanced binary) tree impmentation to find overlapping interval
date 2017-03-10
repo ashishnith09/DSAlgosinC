@@ -1,0 +1,162 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<limits.h>
+
+typedef struct Interval
+{
+	int low,high;
+}interval;
+
+typedef struct Inode
+{
+	interval*i;
+	int max;
+	struct Inode*left,*right;
+}inode;
+
+inode*createnode(interval i)
+{
+	inode*n=(inode*)malloc(sizeof(inode));
+	n->i=(interval*)malloc(sizeof(interval));
+	n->i->low=i.low;
+	n->i->high=i.high;
+	n->max=i.high;
+	n->left=n->right=NULL;
+	return n;
+}
+
+inode*insert(inode*root,interval i)
+{
+	
+	if(root==NULL)
+	return createnode(i);
+	
+	int l=root->i->low;
+	
+	if(i.low<l)
+	root->left=insert(root->left,i);
+	else
+	root->right=insert(root->right,i);
+	
+	if(root->max<i.high)
+	root->max=i.high;
+	
+	return root;	
+}
+
+void preorder(inode*root)
+{
+	if(root==NULL)
+	return;
+	
+	printf("%d  %d  %d \n",root->i->low,root->i->high,root->max);
+	preorder(root->left);
+	preorder(root->right);
+}
+
+int doOverlap(inode*root,interval i)
+{
+	if(i.low>=root->i->low && i.high<=root->i->high)
+	return 1;
+	
+	return 0;
+}
+
+interval*overlap(inode*root,interval i)
+{
+	if(root==NULL)
+	return NULL;
+	
+	
+	if(doOverlap(root,i))
+	{
+	printf("%d %d\n",root->i->low,root->i->high);
+	return root->i;
+}
+	if(root->left && root->left->max>=i.low)
+	return overlap(root->left,i);
+	else
+	return overlap(root->right,i);
+}
+
+inode*minlowinterval(inode*root)
+{
+	while(root->left)
+	root=root->left;
+	
+	return root;
+}
+
+int findmax(int a,int b,int c)
+{
+	return a>b?(a>c?a:c):(b>c?b:c);
+}
+
+inode* deleteinterval(inode*root,interval i)
+{
+	if(root==NULL)
+	return NULL;
+	
+	inode*temp;
+	
+	if(i.low<root->i->low)
+	root->left=deleteinterval(root->left,i);
+	else if(i.low>root->i->low)
+	root->right=deleteinterval(root->right,i);
+	else if(i.low==root->i->low)
+	{
+		if(i.high==root->i->high)
+		{
+		if(root->left==NULL)
+		{
+			temp=root->right;
+			free(root);
+			return temp;
+		}
+		else if(root->right==NULL)
+		{
+			temp=root->left;
+			free(root);
+			return temp;
+		}
+		temp=minlowinterval(root->right);
+		root->i=temp->i;;
+		root->right=deleteinterval(root->right,*(temp->i));
+	}
+	else
+	root->right=deleteinterval(root->right,i);
+}
+	root->max=findmax(root->i->high,((root->left)?root->left->max:INT_MIN),((root->right)?root->right->max:INT_MIN));
+	return root;
+}
+
+int main()
+{
+	interval ins[]={{15, 20}, {10, 30}, {17, 19},
+        {5, 20}, {12, 15}, {30, 40}};
+	int n=sizeof(ins)/sizeof(ins[0]);
+	inode*root=NULL;
+	for(int i=0;i<n;i++)
+	root=insert(root,ins[i]);
+	
+	printf("Interval traversal of interval is \n");
+	printf("Low  High Max\n");
+	preorder(root);
+	
+	//search the overlapping interval
+	interval x={6,7};
+	printf("\nSearching for the interval %d  %d\n",x.low,x.high);
+	interval *i=overlap(root,x);
+	if(i==NULL)
+	printf("\nNo overlapping interval found");
+	else
+	printf("Overlapping interval found is =%d  %d",i->low,i->high);
+	interval z={15,20};
+	root=deleteinterval(root,z);
+	printf("\ntraversal after deletion of node\n");
+	preorder(root);
+	
+	
+	
+	return 0;
+}
