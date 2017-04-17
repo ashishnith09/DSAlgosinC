@@ -1,0 +1,130 @@
+//heapsort
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Maxheap
+{
+	int*array;
+	int capacity;
+	int count;
+}maxheap;
+
+maxheap*createheap(int capacity)
+{
+	maxheap*h=(maxheap*)malloc(sizeof(maxheap));
+	h->capacity=capacity;
+	h->array=(int*)malloc(sizeof(int)*h->capacity);
+	h->count=0;
+	return h;
+}
+
+void print(int a[],int n)
+{
+	for(int i=0;i<n;i++)
+	printf("%d ",a[i]);
+	
+	printf("\n");
+}
+
+void resizeheap(maxheap*h)
+{
+	int *old_arr=h->array;
+	h->array=(int*)malloc(sizeof(int)*h->capacity*2);
+	for(int i=0;i<h->capacity;i++)
+	h->array[i]=old_arr[i];
+	
+	h->capacity=2*h->capacity;
+	free(old_arr);
+}
+
+int leftchild(maxheap*h,int i)
+{
+	int l=2*i+1;
+	if(l>=h->count)
+	return -1;
+	
+	return l;
+}
+
+int rightchild(maxheap*h,int i)
+{
+	int r=2*i+2;
+	if(r>=h->count)
+	return -1;
+	
+	return r;
+}
+
+void perlocatedown(maxheap*h,int i)
+{
+
+	int l=leftchild(h,i);
+	int r=rightchild(h,i);
+	
+	int max,temp;
+	if(h->array[i]<h->array[l] && l!=-1)
+	{
+	max=l;
+	}
+	else
+	max=i;
+	if(h->array[max]<h->array[r] && r!=-1)
+	{
+	max=r;
+	}
+	if(max!=i)
+	{
+	temp=h->array[i];
+	h->array[i]=h->array[max];
+	h->array[max]=temp;
+	perlocatedown(h,max);
+}	
+}
+
+void buildheap(maxheap*h,int a[],int n)
+{
+	if(h==NULL)
+	return;
+	if(n>h->capacity)
+	resizeheap(h);
+	int i;
+	for(i=0;i<n;i++)
+	h->array[i]=a[i];
+	
+	//heapfy the heap....
+	h->count=n;
+	for(int i=(n-1)/2;i>=0;i--)
+	perlocatedown(h,i);	
+}
+
+void heapsort(int a[],int n)
+{
+	//first put content of array into heap 
+	maxheap*h=createheap(n);
+	//buildheap from array
+	buildheap(h,a,n);
+	int temp;
+	for(int i=0;i<n;i++)
+	printf("%d ",h->array[i]);
+	
+	printf("\n");
+	
+	for(int i=n-1;i>=0;i--)
+	{
+		
+		a[i]=h->array[0];
+		h->array[0]=h->array[h->count-1];
+		h->count--;
+		perlocatedown(h,0);
+	}
+}
+
+int main()
+{
+	int arr[]={12,4,52,9,2,5,3,8};
+	int n=sizeof(arr)/sizeof(arr[0]);
+	print(arr,n);
+	heapsort(arr,n);
+	printf("\nAfter heapsort\n");
+	print(arr,n);
+}
