@@ -1,0 +1,110 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Maxheap
+{
+	int*array;
+	int count;
+	int capacity;
+}maxheap;
+
+maxheap*createheap(int capacity)
+{
+	maxheap*h=(maxheap*)malloc(sizeof(maxheap));
+	h->capacity=capacity;
+	h->array=(int*)malloc(sizeof(int)*h->capacity);
+	h->count=0;
+	return h;
+}
+
+void resizeheap(maxheap*h)
+{
+	int *old_arr=h->array;
+	h->array=(int*)malloc(sizeof(int)*2*h->capacity);
+	for(int i=0;i<h->capacity;i++)
+	h->array[i]=old_arr[i];
+	
+	h->capacity=2*h->capacity;
+}
+int leftchild(maxheap*h,int i)
+{
+	int l=2*i+1;
+	if(l>=h->count)
+	return -1;
+	return l;
+}
+
+int rightchild(maxheap*h,int i)
+{
+	int r=2*i+2;
+	if(r>=h->count)
+	return -1;
+	
+	return r;
+}
+
+void perlocatedown(maxheap*h,int i)
+{
+	int r=rightchild(h,i);
+	int l=leftchild(h,i);
+	int max=i;
+	
+	if(h->array[i]<h->array[l] && l>0)
+	max=l;
+	else
+	max=i;
+	
+	if(h->array[max]<h->array[r] && r>0)
+	max=r;
+	
+	if(max!=i)
+	{
+		int temp=h->array[i];
+		h->array[i]=h->array[max];
+		h->array[max]=temp;
+		perlocatedown(h,max);
+	}
+}
+
+void buildheap(maxheap*h,int a[],int k)
+{
+if(k>=h->capacity)
+resizeheap(h);
+
+for(int i=0;i<k;i++)
+h->array[i]=a[i];
+
+h->count=k;
+for(int i=(k-1)/2;i>=0;i--)
+perlocatedown(h,i);
+}
+
+int kthsmallest(int a[],int n,int k)
+{
+	if(k<=0||k>n)
+	return -1;
+	//make a max heap using k elements of array
+	maxheap*h=createheap(k);
+	buildheap(h,a,k);
+	
+	//now comapre k elements from max heap
+	
+	for(int i=k;i<n;i++)
+	{
+		if(h->array[0]>a[i])
+		{
+			h->array[0]=a[i];
+			perlocatedown(h,0);
+		}
+	}
+	return h->array[0];
+}
+
+int main()
+{
+	int arr[]={12, 3, 5, 7, 19};
+	int n=sizeof(arr)/sizeof(arr[0]);
+	int k=8;
+	printf("Kth smallest element is = %d ",kthsmallest(arr,n,k));
+	return 0;
+}
