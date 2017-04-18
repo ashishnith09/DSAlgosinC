@@ -1,0 +1,62 @@
+#include<iostream>
+#include<climits>
+#include<cstdlib>
+using namespace std;
+
+void swap(int *x,int*y)
+{
+	int temp;
+	temp=*x;
+	*x=*y;
+	*y=temp;
+}
+
+int partition(int a[],int l,int r)
+{
+int x=a[r]	;
+int i=l;
+int j;
+for(j=l;j<=r-1;j++)
+{
+	if(a[j]<=x)
+	{
+		swap(&a[i],&a[j]);
+		i++;
+	}
+}
+swap(&a[i],&a[r]);
+return i;
+}
+
+int randompartition(int a[],int l,int r)
+{
+	int n=r-l+1;
+	int pivot=rand()%n;
+	printf("%d\n",pivot);
+	swap(&a[l+pivot],&a[r]);
+	return partition(a,l,r);
+}
+
+int kthsmallest(int a[],int l,int r,int k)
+{
+	if(k>0 && k<=r-l+1)
+	{
+		int pos=randompartition(a,l,r);
+		if(pos-l==k-1)
+		return a[pos];
+		if(pos-l>k-1)
+		return kthsmallest(a,l,pos-1,k);
+
+		return kthsmallest(a,pos+1,r,k-pos-1+l);
+	}
+	return INT_MAX;
+}
+
+int main()
+{
+	int a[]={12, 3, 5, 7, 4, 19, 26};
+	int n=sizeof(a)/sizeof(a[0]);
+	int k=6;
+	printf("Kth smallest element is = %d ",kthsmallest(a,0,n-1,k));
+	return 0;
+}
