@@ -1,0 +1,126 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Maxheap
+{
+	int*c;
+	int*array;
+	int count;
+	int capacity;
+}maxheap;
+
+int leftchild(maxheap*h,int i)
+{
+	int l=2*i+1;
+	if(l>=h->count)
+	return -1;
+	
+	return l;
+}
+
+int rightchild(maxheap*h,int i)
+{
+	int r=2*i+2;
+	if(r>=h->count)
+	return -1;
+	
+	return r;
+}
+
+
+maxheap*createheap(int capacity)
+{
+	maxheap*h=(maxheap*)malloc(sizeof(maxheap));
+	h->capacity=capacity;
+	h->count=0;
+	h->c =(int*)malloc(sizeof(int)*capacity);
+	h->array=(int*)malloc(sizeof(int)*capacity);
+	return h;
+}
+
+void perlocatedown(maxheap*h,int i)
+{
+	int l=leftchild(h,i);
+	int r=rightchild(h,i);
+	
+	int ctemp;
+	
+	int max,temp;
+	if(h->c[i]<h->c[l] && l!=-1)
+	{
+	max=l;
+	}
+	else
+	max=i;
+	if(h->c[max]<h->c[r] && r!=-1)
+	{
+	max=r;
+	}
+	if(max!=i)
+	{
+	temp=h->array[i];
+	ctemp=h->c[i];
+	h->array[i]=h->array[max];
+	h->c[i]=h->c[max];
+	h->array[max]=temp;
+	h->c[max]=ctemp;
+	perlocatedown(h,max);
+}	
+}
+
+void push(maxheap*h,int d)
+{
+	if(h->count==h->capacity)
+	{
+		printf("stack is full");
+		return;
+	}
+	int i;
+	h->count++;
+	i=h->count-1;
+	
+	while(i>0 && h->c[(i-1)/2]<d)
+	{
+		h->array[i]=h->array[(i-1)/2];
+		h->c[i]=h->c[(i-1)/2];
+		i=(i-1)/2;
+	}
+	h->array[i]=d;
+	h->c[i]=h->count;
+	//for(i=(h->count-1)/2;i>=0;i--)	
+	//perlocatedown(h,i);
+}
+
+int pop(maxheap*h)
+{
+	if(h->count<=0)
+	{
+		printf("Stack is empty");
+		return -1;
+	}
+	int d=h->array[0];
+	h->array[0]=h->array[h->count-1];
+	h->c[0]=h->c[h->count-1];
+	h->count--;
+	perlocatedown(h,0);
+	
+	return d;
+}
+
+
+int main()
+{
+	maxheap*h=createheap(10);
+	push(h,10);
+	push(h,20);
+	push(h,12);
+	push(h,8);
+	
+	
+	printf("%d\n",pop(h));
+	printf("%d\n",pop(h));
+	printf("%d\n",pop(h));
+	printf("%d\n",pop(h));
+	//printf("%d\n",pop(h));
+	//printf("%d\n",pop(h));
+}
