@@ -1,0 +1,141 @@
+#include<stdio.h>
+#include<limits.h>
+#include<stdlib.h>
+
+#define n 4
+
+typedef struct Minheapnode
+{
+	int element;
+	int i;
+	int j;
+}minheapnode;
+
+
+typedef struct Minheap
+{
+	minheapnode *array;
+	int count;
+	int capacity;
+}minheap;
+
+minheap*createheap(int capacity)
+{
+	minheap*h=(minheap*)malloc(sizeof(minheap));
+	h->capacity=capacity;
+	h->count=0;
+	h->array=(minheapnode*)malloc(sizeof(minheapnode)*h->capacity);
+	return h;
+}
+
+void printarray(int *a,int size)
+{
+	int i;
+	for(i=0;i<size;i++)
+	printf("%d ",a[i]);
+}
+
+int left(int i)
+{
+	return 2*i+1;
+}
+
+int right(int i)
+{
+	return 2*i+2;
+}
+
+void perlocatedown(minheap*h,int i)
+{
+	int l=left(i);
+	int r=right(i);
+	int min=i;
+	
+	if(l<h->capacity && h->array[l].element<h->array[i].element)
+	min=l;
+	else
+	min=i;
+	if(r<h->capacity && h->array[r].element<h->array[min].element)
+	min=r;
+	
+	if(min!=i)
+	{
+		int temp=h->array[i].element;
+		int tempi=h->array[i].i;
+		int tempj=h->array[i].j;
+		h->array[i].element=h->array[min].element;
+		h->array[i].i=h->array[min].i;
+		h->array[i].j=h->array[min].j;
+		h->array[min].element=temp;
+		h->array[min].i=tempi;
+		h->array[min].j=tempj;
+		perlocatedown(h,min);
+	}
+	
+}
+
+void buildheap(minheap*h,int size)
+{
+	int i;
+	h->count=size;
+	for(i=(size-1)/2;i>=0;i--)
+	{
+		perlocatedown(h,i);
+	}
+}
+
+int*mergearray(int a[][n],int k)
+{
+int *output=(int*)malloc(sizeof(int)*k);
+minheap*node=createheap(k);
+int x,i;
+//insert first element of all rows in to heap
+for(i=0;i<k;i++)
+{
+	node->array[i].element=a[i][0];
+	node->array[i].i=i;
+	node->array[i].j=1;
+}
+//buld minheap
+buildheap(node,k);
+
+// Now one by one get the minimum element from min
+    // heap and replace it with next element of its array
+    int count;
+    for(count=0;count<n*k;count++)
+    {
+    	minheapnode root=node->array[0];
+    	output[count]=root.element;
+    	
+    	if(root.j<n)
+    	{
+    		root.element=a[root.i][root.j];
+    		root.j=root.j+1;
+		}
+		else
+		root.element=INT_MAX;
+		
+		node->array[0].element=root.element;
+		node->array[0].i=root.i;
+		node->array[0].j=root.j;
+		
+		perlocatedown(node,0);
+	}
+
+return output;
+
+}
+
+int main()
+{
+	int a[][n]={{2, 6, 12, 34},
+                     {1, 9, 20, 1000},
+                     {23, 34, 90, 2000}};
+                      
+    int k=sizeof(a)/sizeof(a[0]);
+    int *output=mergearray(a,k);
+    
+    printf("Merged array is  %d\n");
+    printarray(output,n*k);
+	return 0;
+}
