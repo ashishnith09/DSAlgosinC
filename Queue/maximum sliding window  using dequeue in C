@@ -1,0 +1,306 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct dll
+{
+
+int data;
+
+struct dll*prev;
+
+struct dll*next;
+
+}Dll;
+
+Dll*createnode(int d)
+
+{
+
+Dll*newnode=(Dll*)malloc(sizeof(Dll));
+
+newnode->data=d;
+
+newnode->prev=NULL;
+
+newnode->next=NULL;
+
+return newnode;
+
+}
+
+void insertfront(Dll**headf,Dll**tail,int d)
+
+{
+
+Dll*newnode=createnode(d);
+
+if(*headf==NULL)
+
+{
+
+newnode->next=*headf;
+
+newnode->prev=*headf;
+
+*headf=newnode;
+
+*tail=newnode;
+
+return;
+
+}
+
+newnode->next=*headf;
+
+(*headf)->prev=newnode;
+
+newnode->prev=NULL;
+
+(*headf)=newnode;
+
+}
+
+void insertlast(Dll**headf,Dll**tail,int d)
+
+{
+
+Dll*temp=*headf;
+
+Dll*newnode=createnode(d);
+
+if(*headf==NULL)
+
+{
+
+newnode->next=*headf;
+
+newnode->prev=*headf;
+
+*headf=newnode;
+
+*tail=newnode;
+
+return;
+
+}
+
+newnode->prev=*tail;
+
+(*tail)->next=newnode;
+
+newnode->next=NULL;
+
+*tail=newnode;
+
+}
+
+void deletefront(Dll**headf,Dll**tail)
+
+{
+
+Dll*temp=*headf;
+
+if(*headf==NULL)
+
+{
+
+printf("\nQueue is Empty\n");
+
+return;
+
+}
+
+if((*headf)->next==NULL)
+
+{
+
+*headf=NULL;
+
+*tail==NULL;
+
+}
+
+else
+
+{
+
+(*headf)=(*headf)->next;
+
+(*headf)->prev=NULL;
+
+}
+
+free(temp);
+
+}
+
+void deletelast(Dll**headf,Dll**tail)
+
+{
+
+Dll*temp=*tail;
+
+if(*headf==NULL)
+
+{
+
+printf("\nqueue is empty\n");
+
+return;
+
+}
+
+if((*headf)->next==NULL)
+
+{
+
+*headf=NULL;
+
+*tail=NULL;
+
+}
+
+else
+
+{
+
+(*tail)->prev->next=(*tail)->next;
+
+(*tail)=(*tail)->prev;
+
+}
+
+free(temp);
+
+}
+
+void print(Dll*headf)
+
+{
+
+Dll*curr=headf;
+
+if(curr==NULL)
+
+{
+
+printf("\nUndeflow\n");
+
+return;
+
+}
+
+while(curr)
+
+{
+
+printf("%d->",curr->data);
+
+curr=curr->next;
+
+}
+
+printf("\n");
+
+}
+
+int getfront(Dll*headf)
+
+{
+
+if(headf==NULL)
+
+{
+
+printf("\nunderflow\n");
+
+return NULL;
+
+}
+
+else
+
+return(headf->data);
+
+}
+
+int getrear(Dll*tail)
+
+{
+
+if(tail==NULL)
+
+{
+
+printf("\nunderflow\n");
+
+return NULL;
+
+}
+
+else
+
+return(tail->data);
+
+}
+
+void printKMax(int a[],int n,int k,Dll**headf,Dll**tail)
+{
+	
+int i;
+for(i=0;i<k;++i)
+{
+while(*headf && a[i]>getrear(*tail))
+{
+	deletelast(headf,tail);
+}
+
+
+insertlast(headf,tail,a[i]);
+	
+}
+int index;
+for(;i<n;++i)
+{
+printf("%d\n",getfront(*headf));
+//find index of front element
+
+for(int j=0;j<i;j++)
+{
+	if(a[j]==getfront(*headf))
+	{
+	index=j;
+	break;
+}
+
+}
+
+while(*headf && index<=i-k)
+deletefront(headf,tail);
+
+while(*headf && a[i]>getrear(*tail))
+deletelast(headf,tail);
+
+insertlast(headf,tail,a[i]);
+	
+}
+
+printf("%d\n",getfront(*headf));
+	
+}
+
+int main()
+{
+
+Dll*head=NULL;
+
+Dll*tail=NULL;
+
+int arr[]={12, 1, 78, 90, 57, 89, 56};
+int n = sizeof(arr)/sizeof(arr[0]);
+int k = 3;
+printKMax(arr, n, k,&head,&tail);
+
+return 0;
+
+}
