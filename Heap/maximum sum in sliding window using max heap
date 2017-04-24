@@ -1,0 +1,139 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Index
+{
+	int i;
+}index;
+
+typedef struct Maxheap
+{
+	int *array;
+	index*indice;
+	int count;
+	int capacity;
+}maxheap;
+
+maxheap*createheap(int capacity)
+{
+	maxheap*h=(maxheap*)malloc(sizeof(maxheap));
+	h->capacity=capacity;
+	h->count=0;
+	h->array=(int*)malloc(sizeof(int)*h->capacity);
+	h->indice=(index*)malloc(sizeof(index)*capacity);
+	return h;
+}
+
+int leftchild(maxheap*h,int i)
+{
+	int l=2*i+1;
+	
+	return l;
+}
+
+int rightchild(maxheap*h,int i)
+{
+	int r=2*i+2;
+	
+	return r;
+}
+
+void perlocatedown(maxheap*h,int i)
+{
+	int l=leftchild(h,i);
+	int r=rightchild(h,i);
+	
+	int max,temp,tempi;
+	if(h->array[i]<h->array[l] && l<h->count)
+	{
+	max=l;
+	}
+	else
+	max=i;
+	if(h->array[max]<h->array[r] && r<h->count)
+	{
+	max=r;
+	}
+	if(max!=i)
+	{
+	temp=h->array[i];
+	tempi==h->indice[i].i;
+	h->array[i]=h->array[max];
+	h->indice[i].i=h->indice[i].i;
+	h->array[max]=temp;
+	h->indice[max].i=tempi;
+	perlocatedown(h,max);
+}
+}
+
+void deletenode(maxheap*h,int j)
+{
+	//find the node with indice i
+	int index;
+	for(int i=0;i<h->capacity;i++)
+	{
+		if(h->indice[i].i==j)
+		{
+			index=i;
+			break;
+		}
+	}
+	h->array[index]=h->array[h->count-1];
+	h->indice[index].i=h->indice[h->count-1].i;
+	h->count--;
+	perlocatedown(h,index);
+}
+
+void insert(maxheap*h,int d)
+{
+	int k;
+	h->count++;
+	k=h->count-1;
+	h->array[k]=d;
+	
+	while(k>0 && h->array[(k-1)/2]<d)
+	{
+		h->array[k]=h->array[(k-1)/2];
+		k=(k-1)/2;
+	}
+	h->array[k]=d;
+}
+
+void maxw(int a[],int n,int w)
+{
+	//create a minheap using w elements
+	maxheap*h=createheap(w);
+	int i;
+	int max;
+	for(i=0;i<w;i++)
+	{
+		h->array[i]=a[i];
+		h->indice[i].i=i;
+		h->count++;
+	}
+	h->count=w;
+	for(i=(w-1)/2;i>=0;i--)
+	perlocatedown(h,i);
+	
+	for(int i=w-1;i<n;i++)
+	{
+	if(i-w+1!=0)
+	{
+		deletenode(h,i-w);//deleting node with index i-1
+		insert(h,a[i]);
+	}
+	
+	max=h->array[0]	;
+	printf("%d ",max);
+	}
+}
+
+int main()
+{
+	int a[]={1,3,-1,3,5,3,6,7};
+	int n=sizeof(a)/sizeof(a[0]);
+	int w=3;
+	maxw(a,n,w);
+	
+	return 0;
+}
