@@ -1,0 +1,103 @@
+#include<iostream>
+#include<list>
+
+#define NIL -1
+using namespace std;
+
+typedef class Graph
+{
+	int V;
+	list<int> *adj;
+	void APUtil(int v,int visited[],int dis[],int low[],int parent[],int ap[]);
+	public:
+		Graph(int V);
+		void addEdge(int v,int w);
+		void AP();
+}graph;
+
+graph::Graph(int V)
+{
+	this->V=V;
+	adj=new list<int>[V];
+}
+
+void graph::addEdge(int v,int w)
+{
+	adj[v].push_back(w);
+	adj[w].push_back(v);
+}
+
+void graph::APUtil(int u,int visited[],int disc[],int low[],int parent[],int ap[])
+{
+	static int time=0;
+	int children=0;
+	
+	visited[u]=1;
+	
+	disc[u]=low[u]=++time;
+	
+	list<int>::iterator i;
+	for(i=adj[u].begin();i!=adj[u].end();++i)
+	{
+		int v=*i;
+		
+		if(visited[v]==0)
+		{
+		children++;
+		parent[v]=u;
+		APUtil(v,visited,disc,low,parent,ap);
+		
+		low[u]=min(low[u],low[v]);
+		
+		if(parent[u]==NIL && children>2)
+		ap[u]=1;
+		
+		if(parent[u]!=NIL && low[v]>=disc[u])
+		ap[u]=1;
+		}
+		else if(v!=parent[u])
+		low[u]=min(low[u],disc[v]);
+		
+	}
+}
+
+void graph::AP()
+{
+int *visited=new int[V];
+int *low=new int[V];
+int*parent=new int[V];
+int*disc=new int[V];
+int*ap=new int[V];
+
+for(int i=0;i<V;i++)
+{
+visited[i]=0;
+parent[i]=NIL;
+ap[i]=0;	
+}	
+
+for(int i=0;i<V;i++)
+{
+	if(visited[i]==0)
+	APUtil(i,visited,disc,low,parent,ap);
+}
+
+for(int i=0;i<V;i++)
+{
+	if(ap[i]==1)
+	cout<<i<<" ";
+}
+}
+
+int main()
+{
+	cout<<"\n Articulation points in first graph\n";
+	graph g1(5);
+	g1.addEdge(1, 0);
+    g1.addEdge(0, 2);
+    g1.addEdge(2, 1);
+    g1.addEdge(0, 3);
+    g1.addEdge(3, 4);
+    g1.AP();
+	return 0;
+}
