@@ -1,0 +1,100 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Edge
+{
+	int src,dest,weight;
+}edge;
+
+typedef struct Graph
+{
+	int V,E;
+	edge*edge;
+}graph;
+
+typedef struct Subsets
+{
+	int parent;
+	int rank;
+}subsets;
+
+graph*creategraph(int V,int E)
+{
+	graph*g=(graph*)malloc(sizeof(graph));
+	g->V=V;
+	g->E=E;
+	g->edge=(edge*)malloc(sizeof(edge)*E);
+	return g;
+}
+
+int find(subsets*s,int i)
+{
+	//path compression
+	if(s[i].parent!=i)
+	s[i].parent=find(s,s[i].parent);
+	
+	return s[i].parent;
+}
+
+void Union(subsets*s,int x,int y)
+{
+	if(s[x].rank<s[x].rank)
+	s[x].parent=y;
+	else if(s[x].rank>s[x].rank)
+	s[y].parent=x;
+	
+	//if rank are same
+	else
+	{
+		s[y].parent=x;
+		s[x].rank++;
+	}
+}
+
+int isCycle(graph*g)
+{
+	int V=g->V;
+	int E=g->E;
+	
+	subsets*s=(s*)malloc(sizeof(subsets)*V);
+	
+	for(int i=0;i<V;i++)
+	{
+		s[i].parent=i;
+		s[i].rank=0;
+	}
+	
+	for(int e=0;e<E;e++)
+	{
+		int x=find(s,g->edge[0].src);
+		int y=find(s,g->edge[0].dest);
+		
+		if(x==y)
+		return 1;
+		Union(s,x,y);
+	}
+}
+
+int main()
+{
+	int V = 3, E = 3;
+	graph*graph=creategraph(V,E);
+	
+	graph->edge[0].src = 0;
+    graph->edge[0].dest = 1;
+ 
+    // add edge 1-2
+    graph->edge[1].src = 1;
+    graph->edge[1].dest = 2;
+ 
+    // add edge 0-2
+    graph->edge[2].src = 0;
+    graph->edge[2].dest = 2;
+ 
+    if (isCycle(graph))
+        printf( "Graph contains cycle" );
+    else
+        printf( "Graph doesn't contain cycle" );
+ 
+    return 0;
+}
