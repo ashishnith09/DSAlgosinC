@@ -1,0 +1,84 @@
+//detect cycle in unidrected graph using union find
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct Edge
+{
+	int src,dest,weight;
+}edge;
+
+typedef struct Graph
+{
+	int V,E;
+	edge*edge;
+}graph;
+
+graph*creategraph(int V,int E)
+{
+	graph*g=(graph*)malloc(sizeof(graph));
+	g->V=V;
+	g->E=E;
+	g->edge=(edge*)malloc(sizeof(edge)*E);
+	return g;
+}
+
+int find(int parent[],int ele)
+{
+	if(parent[ele]==-1)
+	return ele;
+	find(parent,parent[ele]);
+}
+
+void Union(int parent[],int x,int y)
+{
+	parent[x]=y;
+}
+
+int isCycle(graph*g)
+{
+	int*parent=(int*)malloc(sizeof(int)*g->V);//creating v subsets with -1 intiallyy
+	for(int i=0;i<g->V;i++)
+	parent[i]=-1;//each elements belongs to its own sets
+	
+	for(int i=0;i<g->E;i++)
+	{
+		int x=find(parent,g->edge[i].src);
+		int y=find(parent,g->edge[i].dest);
+		
+		if(x==y)
+		return 1;
+		
+		Union(parent,x,y);
+	}
+	return 0;
+}
+
+int main()
+{
+	 /* Let us create following graph
+         0
+        |  \
+        |    \
+        1-----2 */    
+    int V = 3, E = 2;
+    graph* graph = creategraph(V, E);
+ 
+    // add edge 0-1
+    graph->edge[0].src = 0;
+    graph->edge[0].dest = 1;
+ 
+    // add edge 1-2
+    graph->edge[1].src = 1;
+    graph->edge[1].dest = 2;
+ 
+    // add edge 0-2
+    //graph->edge[2].src = 0;
+    //graph->edge[2].dest = 2;
+ 
+    if (isCycle(graph))
+        printf( "graph contains cycle" );
+    else
+        printf( "graph doesn't contain cycle" );
+ 
+    return 0;
+}
