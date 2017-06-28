@@ -1,0 +1,176 @@
+#include<stdio.h>
+#include<iostream>
+#include<stdlib.h>
+#include<queue>
+using namespace std;
+
+typedef struct Listnode
+
+{
+
+int vertex;
+
+struct Listnode*next;
+
+}listnode;
+
+typedef struct Graph
+
+{
+
+int v;
+
+int e;
+
+listnode**adj;
+
+}graph;
+
+graph*creategraph()
+
+{
+
+int i,x,y;
+
+listnode*temp;
+
+graph*g=(graph*)malloc(sizeof(graph));
+
+printf("enter the number of vertices and edges\n");
+
+scanf("%d\n%d",&g->v,&g->e);
+
+g->adj=(listnode**)malloc(g->v*(sizeof(listnode*)));
+
+//allocating pointers to head
+
+for(i=0;i<g->v;i++)
+
+{
+g->adj[i]=(listnode*)malloc(sizeof(listnode));
+g->adj[i]->vertex=i;
+
+g->adj[i]->next=NULL;
+
+}
+
+for(i=0;i<g->e;i++)
+
+{
+
+printf("reading the edge\n");
+
+scanf("%d\n%d",&x,&y);
+
+temp=(listnode*)malloc(sizeof(listnode));
+
+temp->vertex=y;
+
+temp->next=g->adj[x]->next;
+
+g->adj[x]->next=temp;
+
+//undirected
+
+temp=(listnode*)malloc(sizeof(listnode));
+
+temp->vertex=x;
+
+temp->next=g->adj[y]->next;
+
+g->adj[y]->next=temp;
+
+}
+
+return g;
+
+}
+
+void read(graph*g)
+
+{
+
+int i;
+
+for(i=0;i<g->v;i++)
+
+{
+
+listnode*p;
+
+//printf("%d->",g->adj[i]->vertex);
+
+p=g->adj[i];
+
+while(p)
+
+{
+
+printf("%d->",p->vertex);
+
+p=p->next;
+
+}
+
+printf("\n");
+}
+}
+
+void bfsUtil(graph*g,int visit[],int x,queue<listnode*>q)
+{
+visit[x]=1;
+listnode*p=g->adj[x];
+q.push(p);
+printf("%d ",x);
+
+
+while(!q.empty())
+{
+	p=g->adj[q.front()->vertex];
+	
+	q.pop();
+	
+	while(p)
+	{
+		int w=p->vertex;
+		if(visit[w]==0)
+		{
+			q.push(p);
+			visit[p->vertex]=1;
+			printf("%d ",p->vertex);
+			p=p->next;
+			continue;
+		}
+		p=p->next;
+	}
+	
+
+}
+}
+
+void bfs(graph*g)
+{
+	int visit[g->v];
+	for(int i=0;i<g->v;i++)
+	visit[i]=0;
+	queue<listnode*>q;
+	
+	
+	printf("DFS traversal fo graph\n\n");
+	
+	//for(int i=0;i<g->v;i++)
+	bfsUtil(g,visit,0,q);
+}
+
+int main()
+
+{
+
+graph*g=creategraph();
+
+read(g);
+
+bfs(g);
+return 0;
+
+}
