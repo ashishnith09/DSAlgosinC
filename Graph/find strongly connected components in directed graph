@@ -1,0 +1,116 @@
+#include<iostream>
+#include<list>
+#include<stack>
+using namespace std;
+
+class Graph
+{
+	int V;
+	list<int>*adj;
+		void fillorder(int v,int visited[],stack<int>&stack);
+		void DFSUtil(int v,int visited[]);
+	public:
+	Graph(int V);
+	void printSCC();
+	void addEdge(int v,int w);
+	Graph transpose();
+	
+};
+
+Graph::Graph(int V)
+{
+	this->V=V;
+	adj=new list<int>[V];
+}
+
+void Graph::addEdge(int v,int w)
+{
+	adj[v].push_back(w);
+}
+
+Graph Graph::transpose()
+{
+ 	Graph g2(V);
+ 	for(int v=0;v<V;v++)
+ 	{
+ 	list<int>::iterator i;
+	 for(i=adj[v].begin();i!=adj[v].end();++i)	
+	 {
+	 	g2.adj[*i].push_back(v);
+	 }
+	}
+	return g2;
+}
+
+void Graph::DFSUtil(int u,int visited[])
+{
+	visited[u]=1;
+	cout<<u;
+	
+	list<int>::iterator i;
+	
+	for(i=adj[u].begin();i!=adj[u].end();i++)
+	{
+		if(visited[*i]==0)
+		DFSUtil(*i,visited);
+	}
+}
+
+void Graph::fillorder(int v,int visited[],stack<int>&s)
+{
+	visited[v]=1;
+	
+	list<int> ::iterator i;
+	for(i=adj[v].begin();i!=adj[v].end();i++)
+	{
+		if(visited[*i]==0)
+		fillorder(*i,visited,s);
+	}
+	
+	s.push(v);
+}
+
+
+void Graph::printSCC()
+{
+	stack<int>s;
+	
+	int *visited=new int[V];
+	for(int i=0;i<V;i++)
+	visited[i]=0;
+	
+	for(int i=0;i<V;i++)
+	if(visited[i]==0)
+	fillorder(i,visited,s);
+	
+	Graph gr=transpose();
+	
+	for(int i=0;i<V;i++)
+	visited[i]=0;
+	
+	while(!s.empty())
+	{
+		int v=s.top();
+		s.pop();
+		
+		if(visited[v]==0)
+		{
+		gr.DFSUtil(v,visited);
+	}
+	cout<<endl;
+	}
+}
+
+int main()
+{
+	Graph g(5);
+	g.addEdge(1,0);
+	g.addEdge(0,2);
+	g.addEdge(2,1);
+	g.addEdge(0,3);
+	g.addEdge(3,4);
+	
+	cout<<"Following are the strongly connected components"<<endl;
+	
+	g.printSCC();
+}
