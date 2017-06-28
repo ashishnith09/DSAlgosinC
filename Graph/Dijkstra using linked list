@@ -1,0 +1,244 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<limits.h>
+
+typedef struct Listnode
+{
+	int dest;
+	int weight;
+	struct Listnode*next;
+}listnode;
+
+typedef struct Adjlist
+{
+	listnode*head;
+}adjlist;
+
+typedef struct Graph
+{
+	int V;
+	adjlist*array;
+}graph;
+
+listnode*createnode(int dest,int weight)
+{
+	listnode*n=(listnode*)malloc(sizeof(listnode));
+	n->dest=dest;
+	n->weight=weight;
+	return n;
+}
+
+graph*creategraph(int V)
+{
+	graph*g=(graph*)malloc(sizeof(graph));
+	g->V=V;
+	g->array=(adjlist*)malloc(sizeof(adjlist)*V);
+	
+	for(int i=0;i<V;i++)
+	g->array[i].head=NULL;
+	
+	return g;
+}
+
+void addEdge(graph*g,int src,int dest,int weight)
+{
+	listnode*n=createnode(dest,weight);
+	n->next=g->array[src].head;
+	g->array[src].head=n;
+	
+	n=createnode(src,weight);
+	n->next=g->array[dest].head;
+	g->array[dest].head=n;
+}
+
+typedef struct Minheapnode
+{
+	int v;
+	int dist;
+}minheapnode;
+
+typedef struct Minheap
+{
+	minheapnode**array;
+	int size;
+	int capacity;
+	int *pos;
+}minheap;
+
+minheapnode*createminheapnode(int v,int dist)
+{
+	minheapnode*n=(minheapnode*)malloc(sizeof(minheapnode));
+	n->v=v;
+	n->dist=dist;
+}
+
+minheap*createminheap(int capacity)
+{
+	minheap*h=(minheap*)malloc(sizeof(minheap));
+	h->capacity=capacity;
+	h->pos=(int*)malloc(sizeof(int)*capacity);
+	h->size=0;
+	h->capacity=capacity;
+	
+	h->array=(minheapnode**)malloc(sizeof(minheapnode*)*capacity);
+	return h;
+}
+
+void swap(minheapnode**x,minheapnode**y)
+{
+	minheapnode*t=*x;
+	*x=*y;
+	*y=t;
+	
+}
+
+void decreasekey(minheap*h,int v,int dist)
+{
+	int i=h->pos[v];
+	
+	h->array[i]->dist=dist;
+	
+	while(i && h->array[i]->dist<h->array[(i-1)/2]->dist)
+	{
+		h->pos[h->array[i]->v]=(i-1)/2;
+		h->pos[h->array[(i-1)/2]->v]=i;
+		swap(&h->array[i],&h->array[(i-1)/2]);
+		i=(i-1)/2;
+	}
+}
+
+int Isempty(minheap*h)
+{
+	if(h->size==0)
+	return 1;
+	return 0;
+}
+
+void minheapify(minheap*h,int index)
+{
+	int smallest,left,right;
+	
+	smallest=index;
+	left=2*index+1;
+	right=2*index+2;
+	
+	if(left<h->size && h->array[left]->dist<h->array[smallest]->dist)
+	smallest=left;
+	
+	if(right<h->size && h->array[right]->dist<h->array[smallest]->dist)
+	smallest=right;
+	
+	if(smallest!=index)
+	{
+		minheapnode*n=h->array[index];
+		minheapnode*small=h->array[smallest];
+		
+		//swap positions
+		h->pos[small->v]=index;
+		h->pos[n->v]=smallest;
+		
+		swap(&h->array[smallest], &h->array[index]);
+		minheapify(h,smallest);
+	}
+}
+
+minheapnode*extractmin(minheap*h)
+{
+	if(Isempty(h))
+	return NULL;
+	
+	minheapnode*root=h->array[0];
+	minheapnode*lastnode=h->array[h->size-1];
+	h->array[0]=lastnode;
+	
+	h->pos[root->v]=h->size-1;
+	h->pos[lastnode->v]=0;
+	
+	h->size--;
+	
+	minheapify(h,0);
+	
+	return root;
+}
+
+int isinminheap(minheap*h,int v)
+{
+	if(h->pos[v]<h->size)
+	return 1;
+	
+	return 0;
+}
+
+
+void printarr(int dist[],int n)
+{
+	printf("Vertex   Distance from Source\n");
+    for (int i = 0; i < n; ++i)
+        printf("%d \t\t %d\n", i, dist[i]);
+}
+
+void dijkstra(graph*g,int src)
+{
+	int V=g->V;
+	int dist[V];
+	
+	minheap*h=createminheap(V);
+	for(int v=0;v<V;v++)
+	{
+		dist[v]=INT_MAX;
+		h->array[v]=createminheapnode(v,dist[v]);
+		h->pos[v]=v;
+	}
+	h->array[src]=createminheapnode(src,dist[src]);
+	h->pos[src]=src;
+	dist[src]=0;
+	decreasekey(h,src,dist[src]);
+	
+	h->size=V;
+	
+	while(!Isempty(h))
+	{
+		minheapnode*n=extractmin(h);
+		int u=n->v;
+		
+		listnode*pcrawl=g->array[u].head;
+		while(pcrawl)
+		{
+			int v=pcrawl->dest;
+			
+			if(isinminheap(h,v) && dist[u]!=INT_MAX && pcrawl->weight+dist[u]<dist[v])
+			{
+			dist[v]=dist[u]+pcrawl->weight;
+			
+			decreasekey(h,v,dist[v]);
+			
+			}
+			pcrawl=pcrawl->next;
+		}
+		
+	}
+	printarr(dist,V);
+}
+
+int main()
+{
+	int V = 9;
+    struct Graph* graph = creategraph(V);
+    addEdge(graph, 0, 1, 4);
+    addEdge(graph, 0, 7, 8);
+    addEdge(graph, 1, 2, 8);
+    addEdge(graph, 1, 7, 11);
+    addEdge(graph, 2, 3, 7);
+    addEdge(graph, 2, 8, 2);
+    addEdge(graph, 2, 5, 4);
+    addEdge(graph, 3, 4, 9);
+    addEdge(graph, 3, 5, 14);
+    addEdge(graph, 4, 5, 10);
+    addEdge(graph, 5, 6, 2);
+    addEdge(graph, 6, 7, 1);
+    addEdge(graph, 6, 8, 6);
+    addEdge(graph, 7, 8, 7);
+ 
+    dijkstra(graph, 0);
+    return 0;
+}
