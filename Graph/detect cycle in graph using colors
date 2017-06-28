@@ -1,0 +1,87 @@
+#include<iostream>
+#include<list>
+
+#define White 0
+#define Grey 1
+#define Black 2
+using namespace std;
+
+enum Color{white,black,grey};
+
+typedef class Graph
+{
+	int V;
+	list<int> *adj;
+	int DFS(int v,int color[]);
+	public:
+		Graph(int V);
+		void addEdge(int v,int w);
+		int isCyclic();
+		
+}graph;
+
+Graph::Graph(int V)
+{
+	this->V=V;
+	adj=new list<int>[V];
+}
+
+void Graph::addEdge(int v,int w)
+{
+adj[v].push_back(w)	;
+}
+
+int Graph:: DFS(int u,int color[])
+{
+	color[u]=Grey;
+	
+	list<int>::iterator i;
+	
+	for(i=adj[u].begin();i!=adj[u].end();i++)
+	{
+		int v=*i;
+		
+		if(color[v]==Grey)
+		return 1;
+		
+		
+		if(color[v]==White && DFS(v,color))
+		return 1;
+	}
+	color[u]=Black;
+	return 0;
+}
+
+int Graph::isCyclic()
+{
+	int *color=new int[V];
+	
+	for(int i=0;i<V;i++)
+	color[i]=White;
+	
+	for(int i=0;i<V;i++)
+	if(color[i]==White)
+	if(DFS(i,color))
+	return 1;
+	
+	return 0;
+}
+
+int main()
+{
+	 Graph g(4);
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(1, 2);
+    g.addEdge(2, 0);
+    g.addEdge(2, 3);
+    g.addEdge(3, 3);
+ 
+    if (g.isCyclic())
+        cout << "Graph contains cycle";
+    else
+        cout << "Graph doesn't contain cycle";
+        
+        cout<<white<<endl<<black<<endl<<grey<<endl;
+	return 0;
+}
