@@ -1,0 +1,63 @@
+#include<bits/stdc++.h>
+using namespace std;
+class Graph{
+	int V;
+	list<int> *adj;
+	int isPathUtil( int s, int d, bool* visited);
+public:
+	Graph(int V);
+	void addEdge(int u, int v);
+	int isPath(int s, int d);
+};
+Graph::Graph(int V){
+	this->V = V;
+	adj = new list<int> [V];
+}
+void Graph::addEdge(int u, int v){
+	adj[u].push_back(v);
+}
+int Graph::isPathUtil(int s, int d, bool* visited){
+	visited[s]=true;
+	int flag=0;
+	list<int>::iterator it;
+	if(s==d){
+		return 1;
+	}
+	for(it = adj[s].begin(); it!=adj[s].end(); it++){
+		if(!visited[*it])if(isPathUtil(*it,d,visited))return 1;
+	}
+	return 0;
+}
+int Graph::isPath(int s, int d){
+	bool *visited = new bool[V] ;
+	for(int i=0; i<V; i++)visited[i]=false;
+	if(s==d)return 1;
+	if(isPathUtil(s,d,visited)){
+		return 1;
+	}
+	return 0;
+}
+int main(void){
+	// Create a graph given in the above diagram
+    Graph g(4);
+    g.addEdge(0, 1);
+    g.addEdge(0, 2);
+    g.addEdge(1, 2);
+    g.addEdge(2, 0);
+    g.addEdge(2, 3);
+    g.addEdge(3, 3);
+ 
+    int u = 1, v = 3;
+    if(g.isPath(u, v))
+        cout<< "\n There is a path from " << u << " to " << v;
+    else
+        cout<< "\n There is no path from " << u << " to " << v;
+ 
+    u = 3, v = 1;
+    if(g.isPath(u, v))
+        cout<< "\n There is a path from " << u << " to " << v;
+    else
+        cout<< "\n There is no path from " << u << " to " << v;
+ 
+	return 0;
+}
